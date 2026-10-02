@@ -3,6 +3,7 @@ and two plain LLM calls."""
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 from email.utils import parseaddr
 
@@ -13,7 +14,8 @@ from prep_world.guard import leaks, looks_like_attack, visible_text
 from prepare import _mcp
 from prepare.memory import CompanyMemory
 
-APPROVE_URL = "http://127.0.0.1:8200/approve"
+# where the approval email links: the app itself, or a public address that forwards to it
+APPROVE_URL = os.environ.get("PREP_APPROVE_URL", "http://127.0.0.1:8200/approve")
 
 HEADING = ("Known from past meetings and approved briefs with this company. Do not research these "
            "again; verify or update them, and report what is new or changed:")
