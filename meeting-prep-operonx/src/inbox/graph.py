@@ -26,7 +26,7 @@ def inbox(item):
 def on_mail():
     src = ingress()
     new = inbox(item=src["item"], name="inbox")
-    brief = prepare(email=new["email"], deliver=True)
+    brief = prepare(email=new["email"], deliver=True, name="prepare")
     START >> src >> new >> if_(new["ours"] == True, END).else_(brief)  # noqa: E712
     brief >> END
 
@@ -37,5 +37,5 @@ def sweep():
     ids = ops.unread()
     one = ops.each(ids=ids["ids"])
     got = ops.fetch(item=one["item"])
-    brief = prepare(email=got["email"], deliver=True)
+    brief = prepare(email=got["email"], deliver=True, name="prepare")
     START >> src >> ids >> one >> got >> brief >> END
