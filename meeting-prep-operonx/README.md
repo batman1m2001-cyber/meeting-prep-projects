@@ -30,7 +30,9 @@ Each box is a zone: a nested `@graph`, one node in its parent. Collapsed in Stud
 
 The brief draws six "agents"; here only Web Research is an agent (it decides which tools to
 call, turn by turn). The others have one fixed path, so they are workflow steps — a zone
-named after the box. The research agents' memory is visible twice: `company_memory` before
+named after the box. A zone's node is named by the variable it is assigned to (`email`,
+`extract_company`, …); its `@graph` is named after the box (`email_agent`,
+`extract_company_name`, …). The research agents' memory is visible twice: `company_memory` before
 them in `web_research`, and `context → recalled` inside each agent (same recall, same run
 memo, so it is fetched once).
 
@@ -40,6 +42,7 @@ memo, so it is fetched once).
 | `src/prepare/` | the flow: `graph.py` wiring, `ops.py` steps, `tools.py` the research tools, `_mcp.py` |
 | `src/inbox/`, `src/approve/`, `src/golden/` | how runs start and end (`inbox`, `send_or_save` zones) |
 | `tests/test_zones.py` | the approve link and the inbox door, offline (mail and drafts faked) |
+| `tests/repo/test_graph_conventions.py` | the OperonX conventions (qc-snatcher's): every `@graph`/`@op` at module level, graphs in `graph.py` and ops in `ops.py`, no `name=`, every parameter used, wiring written once, every model reply checked |
 | `datasets/golden.jsonl` | the 19 golden emails as eval cases |
 
 ## Run
@@ -50,6 +53,7 @@ memo, so it is fetched once).
 # here
 uv run operonx-run golden      # the eval: 19 cases, fails under 90%
 uv run python tests/test_zones.py   # approve link + inbox door, nothing sent
+uv run pytest tests/repo            # the conventions
 uv run operonx-serve           # :8200 — then: (cd ../meeting-prep-world && uv run prep-send lotus-intro)
 ```
 
