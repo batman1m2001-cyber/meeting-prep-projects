@@ -1,0 +1,19 @@
+[project]
+name = "meeting-prep-langgraph"
+version = "0.1.0"
+description = "The meeting-prep assistant, built on LangGraph"
+requires-python = ">=3.12"
+dependencies = [
+    "langgraph>=1.2",
+    "langchain>=1.4",
+    "langchain-openai>=1.6",
+    "langchain-mcp-adapters",
+    "meeting-prep-world",
+]
+
+[tool.uv]
+package = false
+index-url = "https://pypi.org/simple"
+
+[tool.uv.sources]
+meeting-prep-world = { path = "../meeting-prep-world", editable = true }

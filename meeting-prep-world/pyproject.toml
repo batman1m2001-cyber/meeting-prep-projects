@@ -1,0 +1,29 @@
+[project]
+name = "meeting-prep-world"
+version = "0.1.0"
+description = "The meeting-prep assistant's world: mail, CRM, calendar, knowledge base, web and search — shared by the OperonX and LangGraph builds"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6",
+    "psycopg[binary]>=3.2",
+    "openai>=1.60",
+    "mcp>=1.10",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+]
+
+[project.scripts]
+prep-seed = "prep_world.db:main"
+prep-mocks = "prep_world.mocks:main"
+prep-mcp = "prep_world.mcp_server:main"
+prep-send = "prep_world.mail:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["prep_world"]
+
+[tool.uv]
+index-url = "https://pypi.org/simple"

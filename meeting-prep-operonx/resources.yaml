@@ -1,0 +1,10 @@
+# The model: the seminar runner's mock by default; a real endpoint through the environment.
+llm:assistant:
+  api_type: openai
+  api_key: ${OPENAI_API_KEY:mock}
+  base_url: ${OPENAI_BASE_URL:http://127.0.0.1:8000/mock/v1}
+  model: ${PREP_MODEL:gpt-4o-mini}
+
+# Every run recorded under .operonx/runs — what Studio draws and lights up.
+trace_local:
+  default: {}

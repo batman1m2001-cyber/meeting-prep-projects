@@ -1,0 +1,29 @@
+# The meeting-prep assistant's world: a mail server and a database.
+#   docker compose up -d
+#   uv run prep-seed                 # tables + the six companies (once, or to reset)
+#
+# Mailpit: SMTP on :1025, the inbox at http://127.0.0.1:8025. Every new mail is POSTed
+# to PREP_WEBHOOK — the app that runs the flow (default: the OperonX build on :8200).
+# Postgres + pgvector on :5433 (5432 is often taken): CRM, calendar, knowledge base.
+services:
+  mail:
+    image: axllent/mailpit
+    ports: ["1025:1025", "8025:8025"]
+    environment:
+      MP_WEBHOOK_URL: ${PREP_WEBHOOK:-http://host.docker.internal:8200/mail}
+      MP_MAX_MESSAGES: "1000"
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    restart: unless-stopped
+
+  db:
+    image: pgvector/pgvector:pg17
+    ports: ["5433:5432"]
+    environment:
+      POSTGRES_USER: prep
+      POSTGRES_PASSWORD: prep
+      POSTGRES_DB: prep
+    volumes: [prep-db:/var/lib/postgresql/data]
+    restart: unless-stopped
+
+volumes:
+  prep-db:
