@@ -1,0 +1,17 @@
+========================================================================
+engine   trace_id=1f4b5947-8a0b-48e0-89bc-989fb6148ed0   dur=12480ms   nodes=2
+project=meeting-prep  request_id=1f4b5947-8a0b-48e0-89bc-989fb6148ed0  user_id=49ec6c5b-d4f5-4318-a2be-db08f49e15bc  session_id=3439274b-5a79-4c5e-9c72-c3881d76421b  origin=service  service=approve  transport=http
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.000s  d                       [main]   12480ms  ['draft', 'decision']→['reply']
+              in  draft='15' decision='approve'
+              out reply={3 keys}
+   12.480s  out                     [main]       0ms  ['item']→['sent']
+              in  item={3 keys}
+              out sent=True
+
+========================================================================
+SUMMARY  nodes=2  errors=0
+========================================================================

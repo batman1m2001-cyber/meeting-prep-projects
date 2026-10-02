@@ -1,0 +1,41 @@
+========================================================================
+params   trace_id=39cc24d1-efc5-4ade-b3fa-de4a8cd8cf4e   dur=405ms   nodes=10
+project=meeting-prep  request_id=39cc24d1-efc5-4ade-b3fa-de4a8cd8cf4e  user_id=9dc0349b-9270-4f9e-8ecd-3d92c2c77b9f  session_id=b27d71e1-cfdf-4857-b597-fe2e4a169aee  origin=eval  job=golden  job_run=20261001T084059-891877  key=newsletter
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.000s  src                     [main]       0ms  []→['_transient_stream', 'items', 'last_ctx']
+              out _transient_stream=True items=1 last_ctx="('main', '[0]')"
+
+    0.000s  c                       [main.[0]]       0ms  ['item']→['email']
+              in  item='<dict n=7 transient>'
+              out email={7 keys}
+    0.000s  gate                    [main.[0]]       0ms  ['email']→['blocked', 'reason']
+              in  email={7 keys}
+              out blocked=False reason=None
+    0.000s  route_1                 [main.[0]]       0ms  ['blocked']→['target', 'matched', '__branch_target__']
+              in  blocked=False
+              out target='read' matched='default' __branch_target__='read'
+    0.000s  read                    [main.[0]]       0ms  ['email']→['text']
+              in  email={7 keys}
+              out text='From: AI Weekly <news@aiweekly.example>\nSubject: T…(+105)'
+    0.000s  triage                  [main.[0]]     404ms  ['prompt', 'temperature', 'letter']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras', 'is_lead', 'intent', 'contact', 'error']
+              in  prompt={2 keys} temperature=0.0 letter='From: AI Weekly <news@aiweekly.example>\nSubject: T…(+105)'
+              out role='assistant' content='{"is_lead": false, "intent": "question", "contact"…(+14)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys} is_lead=False intent='question' contact='AI Weekly' error=None
+    0.405s  route_2                 [main.[0]]       0ms  ['is_lead']→['target', 'matched', '__branch_target__']
+              in  is_lead=False
+              out target='skip' matched='is_lead == False' __branch_target__='skip'
+    0.405s  skip                    [main.[0]]       0ms  ['intent']→['outcome']
+              in  intent='question'
+              out outcome={5 keys}
+    0.405s  done                    [main.[0]]       0ms  ['b']→['outcome']
+              in  b={5 keys}
+              out outcome={5 keys}
+    0.405s  out                     [main.[0]]       0ms  ['item']→['sent']
+              in  item={5 keys}
+              out sent=True
+
+========================================================================
+SUMMARY  nodes=10  errors=0
+========================================================================

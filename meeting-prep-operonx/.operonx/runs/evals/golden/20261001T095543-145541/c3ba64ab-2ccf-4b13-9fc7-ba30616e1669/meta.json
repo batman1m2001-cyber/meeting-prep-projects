@@ -1,0 +1,27 @@
+{
+  "trace_id": "c3ba64ab-2ccf-4b13-9fc7-ba30616e1669",
+  "workflow_name": "params",
+  "started_at": 786392.5306428,
+  "wall_started_at": 1790848543.172809,
+  "ended_at": 786397.2000251,
+  "duration_ms": 4669.38229999505,
+  "node_count": 202,
+  "metadata": {
+    "project": "meeting-prep",
+    "version": "507ef797bc10",
+    "version_dirty": false,
+    "request_id": "c3ba64ab-2ccf-4b13-9fc7-ba30616e1669",
+    "user_id": "fd20a7e7-25d2-487f-9585-c504ab71e79f",
+    "session_id": "9e708787-8cfe-4f34-b59b-c2989ffe1336",
+    "origin": "eval",
+    "job": "golden",
+    "job_run": "20261001T095543-145541",
+    "key": "saigonfresh-followup",
+    "tags": [
+      "origin:eval",
+      "job:golden",
+      "job_run:20261001T095543-145541",
+      "key:saigonfresh-followup"
+    ]
+  }
+}

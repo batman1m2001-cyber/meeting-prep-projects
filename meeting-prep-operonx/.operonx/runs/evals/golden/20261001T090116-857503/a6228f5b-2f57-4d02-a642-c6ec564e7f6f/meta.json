@@ -1,0 +1,27 @@
+{
+  "trace_id": "a6228f5b-2f57-4d02-a642-c6ec564e7f6f",
+  "workflow_name": "params",
+  "started_at": 783133.7894006,
+  "wall_started_at": 1790845283.884615,
+  "ended_at": 783136.235085,
+  "duration_ms": 2445.6844000378624,
+  "node_count": 202,
+  "metadata": {
+    "project": "meeting-prep",
+    "version": "ce2c6a081493",
+    "version_dirty": true,
+    "request_id": "a6228f5b-2f57-4d02-a642-c6ec564e7f6f",
+    "user_id": "4383da0d-9465-4818-8523-980272c7288e",
+    "session_id": "580e26f8-0784-4f2a-b055-b0929981d14c",
+    "origin": "eval",
+    "job": "golden",
+    "job_run": "20261001T090116-857503",
+    "key": "mekong-vn",
+    "tags": [
+      "origin:eval",
+      "job:golden",
+      "job_run:20261001T090116-857503",
+      "key:mekong-vn"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "trace_id": "251ad6eabfae4a32b8f41888db270b49",
+  "workflow_name": "engine",
+  "started_at": 785363.6849578,
+  "wall_started_at": 1790847514.1544294,
+  "ended_at": 785363.6902707,
+  "duration_ms": 5.312900058925152,
+  "node_count": 4,
+  "metadata": {
+    "project": "meeting-prep",
+    "version": "3595de13792e",
+    "version_dirty": false,
+    "request_id": "50e4e76f-3f0f-4208-a6df-49f8ea39e049",
+    "user_id": "d20e5122-2644-4579-afd2-5722c71c7045",
+    "session_id": "72caed9c-b551-42c2-99dc-7ae9d9b4dd43",
+    "origin": "service",
+    "service": "mail",
+    "transport": "webhook",
+    "tags": [
+      "origin:service",
+      "service:mail",
+      "transport:webhook"
+    ]
+  }
+}

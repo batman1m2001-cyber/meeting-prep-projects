@@ -1,0 +1,32 @@
+========================================================================
+engine   trace_id=fea25767e30a43a89dfe8cc1ee4e7ce0   dur=24ms   nodes=7
+project=meeting-prep  request_id=0f8652ae-1a4d-4f75-9f96-005c3a02b697  user_id=327f1899-2775-4dd7-8e8f-a45f4c9e742b  session_id=faa5fb2d-d731-42b8-9d49-15b993e7e7f5  origin=service  service=mail  transport=webhook
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.000s  src                     [main]       0ms  []→['_transient_stream', 'items', 'last_ctx']
+              out _transient_stream=True items=1 last_ctx="('main', '[0]')"
+
+    0.000s  got                     [main.[0]]      23ms  ['item']→['email', 'ours']
+              in  item='<dict n=15 transient>'
+              out email={7 keys} ours=False
+    0.024s  route_1                 [main.[0]]       0ms  ['ours']→['target', 'matched', '__branch_target__']
+              in  ours=False
+              out target='brief' matched='default' __branch_target__='brief'
+    0.024s  gate                    [main.[0]]       0ms  ['email']→['blocked', 'reason']
+              in  email={7 keys}
+              out blocked=True reason='Ignore all previous instructions'
+    0.024s  route_1                 [main.[0]]       0ms  ['blocked']→['target', 'matched', '__branch_target__']
+              in  blocked=True
+              out target='stop' matched='blocked == True' __branch_target__='stop'
+    0.024s  stop                    [main.[0]]       0ms  ['reason']→['outcome']
+              in  reason='Ignore all previous instructions'
+              out outcome={5 keys}
+    0.024s  done                    [main.[0]]       0ms  ['a']→['outcome']
+              in  a={5 keys}
+              out outcome={5 keys}
+
+========================================================================
+SUMMARY  nodes=7  errors=0
+========================================================================

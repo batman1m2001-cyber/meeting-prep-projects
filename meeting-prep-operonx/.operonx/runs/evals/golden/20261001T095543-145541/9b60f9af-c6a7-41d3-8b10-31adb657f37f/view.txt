@@ -1,0 +1,611 @@
+========================================================================
+params   trace_id=9b60f9af-c6a7-41d3-8b10-31adb657f37f   dur=3053ms   nodes=202
+project=meeting-prep  version=507ef797bc10  version_dirty=False  request_id=9b60f9af-c6a7-41d3-8b10-31adb657f37f  user_id=eddd1e80-1a6b-4bdc-a943-fbbeaccae912  session_id=6e94ff78-85e0-44fb-81b1-ef007bc9cfce  origin=eval  job=golden  job_run=20261001T095543-145541  key=redriver-followup
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.000s  src                     [main]       0ms  []→['_transient_stream', 'items', 'last_ctx']
+              out _transient_stream=True items=1 last_ctx="('main', '[0]')"
+
+    0.000s  c                       [main.[0]]       0ms  ['item']→['email']
+              in  item='<dict n=7 transient>'
+              out email={7 keys}
+    0.000s  gate                    [main.[0]]       0ms  ['email']→['blocked', 'reason']
+              in  email={7 keys}
+              out blocked=False reason=None
+    0.000s  route_1                 [main.[0]]       0ms  ['blocked']→['target', 'matched', '__branch_target__']
+              in  blocked=False
+              out target='read' matched='default' __branch_target__='read'
+    0.000s  read                    [main.[0]]       0ms  ['email']→['text']
+              in  email={7 keys}
+              out text='From: Hoa Bui <hoa.bui@redrivertextiles.example>\nS…(+84)'
+    0.000s  triage                  [main.[0]]     606ms  ['prompt', 'temperature', 'letter']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras', 'is_lead', 'intent', 'contact', 'error']
+              in  prompt={2 keys} temperature=0.0 letter='From: Hoa Bui <hoa.bui@redrivertextiles.example>\nS…(+84)'
+              out role='assistant' content='{"is_lead": true, "intent": "question", "contact":…(+11)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys} is_lead=True intent='question' contact='Hoa Bui' error=None
+    0.606s  route_2                 [main.[0]]       0ms  ['is_lead']→['target', 'matched', '__branch_target__']
+              in  is_lead=True
+              out target='who' matched='default' __branch_target__='who'
+    0.606s  who                     [main.[0]]      21ms  ['email']→['company', 'company_id', 'name']
+              in  email={7 keys}
+              out company={7 keys} company_id='redriver' name='Red River Textiles'
+    0.627s  asks                    [main.[0]]       0ms  ['company']→['website', 'news', 'people']
+              in  company={7 keys}
+              out website=[1 items] news=[1 items] people=[1 items]
+    0.627s  crm                     [main.[0]]      51ms  ['company_id']→['contacts', 'history']
+              in  company_id='redriver'
+              out contacts=[1 items] history=[0 items]
+    0.627s  cal                     [main.[0]]      22ms  ['company_id']→['meetings']
+              in  company_id='redriver'
+              out meetings=[0 items]
+    0.627s  memory                  [main.[0]]      25ms  ['company']→['memory']
+              in  company={7 keys}
+              out memory=[0 items]
+    0.629s  counter                 [main.[0]]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=0
+              out turns=1 notice=[0 items] exhausted=False
+    0.629s  asked                   [main.[0]]       0ms  ['messages']→['text']
+              in  messages=[1 items]
+              out text='Research Red River Textiles for a sales meeting: w…(+119)'
+    0.629s  counter                 [main.[0]]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=0
+              out turns=1 notice=[0 items] exhausted=False
+    0.629s  asked                   [main.[0]]       0ms  ['messages']→['text']
+              in  messages=[1 items]
+              out text='Research Red River Textiles for a sales meeting: n…(+83)'
+    0.629s  counter                 [main.[0]]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=0
+              out turns=1 notice=[0 items] exhausted=False
+    0.629s  asked                   [main.[0]]       0ms  ['messages']→['text']
+              in  messages=[1 items]
+              out text='Research Red River Textiles for a sales meeting: t…(+83)'
+    0.629s  planned                 [main.[0]]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[1 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[1 items] tokens=179
+    0.629s  compacted               [main.[0]]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[1 items] summary=''
+              out messages=[1 items] compacted=False dropped=0
+    0.629s  planned                 [main.[0]]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[1 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[1 items] tokens=169
+    0.629s  compacted               [main.[0]]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[1 items] summary=''
+              out messages=[1 items] compacted=False dropped=0
+    0.629s  planned                 [main.[0]]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[1 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[1 items] tokens=169
+    0.629s  compacted               [main.[0]]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[1 items] summary=''
+              out messages=[1 items] compacted=False dropped=0
+    0.630s  recalled                [main.[0]]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: w…(+119)' limit=5 deadline=8.0
+              out context=None count=0
+    0.630s  recalled                [main.[0]]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: n…(+83)' limit=5 deadline=8.0
+              out context=None count=0
+    0.630s  recalled                [main.[0]]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: t…(+83)' limit=5 deadline=8.0
+              out context=None count=0
+    0.630s  matched                 [main.[0]]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: w…(+119)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    0.630s  assembled               [main.[0]]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[1 items] notices=[0 items]
+              out messages=[2 items] count=2
+    0.630s  cached                  [main.[0]]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[2 items] breakpoints=1
+              out messages=[2 items] marked=1
+    0.630s  matched                 [main.[0]]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: n…(+83)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    0.630s  assembled               [main.[0]]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[1 items] notices=[0 items]
+              out messages=[2 items] count=2
+    0.630s  cached                  [main.[0]]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[2 items] breakpoints=1
+              out messages=[2 items] marked=1
+    0.630s  matched                 [main.[0]]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: t…(+83)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    0.630s  assembled               [main.[0]]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[1 items] notices=[0 items]
+              out messages=[2 items] count=2
+    0.630s  cached                  [main.[0]]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[2 items] breakpoints=1
+              out messages=[2 items] marked=1
+    0.630s  choice                  [main.[0]]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    0.630s  choice                  [main.[0]]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    0.630s  choice                  [main.[0]]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    0.630s  llm                     [main.[0]]     608ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[2 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='' finish_reason='tool_calls' model_used='assistant' tool_calls=[1 items] usage={6 keys} cost_usd=None extras={3 keys}
+    0.632s  llm                     [main.[0]]     560ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[2 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='' finish_reason='tool_calls' model_used='assistant' tool_calls=[1 items] usage={6 keys} cost_usd=None extras={3 keys}
+    0.633s  llm                     [main.[0]]     561ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[2 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='' finish_reason='tool_calls' model_used='assistant' tool_calls=[1 items] usage={6 keys} cost_usd=None extras={3 keys}
+    1.191s  adapted                 [main.[0]]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='' tool_calls=[1 items] finish_reason='tool_calls'
+              out assistant_message=[1 items] tool_calls=[1 items] done=False finish_reason='tool_calls' truncated=False
+    1.191s  assistant               [main.[0]]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    1.191s  router                  [main.[0]]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=False exhausted=False tool_calls=[1 items]
+              out finished=False
+    1.191s  closed                  [main.[0]]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=False exhausted=False messages=[1 items]
+              out messages=[0 items]
+    1.191s  ended                   [main.[0]]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='tool_calls' truncated=False
+              out stopped_early=False truncated=False finish_reason='tool_calls'
+    1.191s  route_1                 [main.[0]]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=False
+              out target='tools' matched='default' __branch_target__='tools'
+    1.192s  calls                   [main.[0].[0]]       0ms  ['tool_calls']→['call', 'index']
+              in  tool_calls=[1 items]
+              out call={3 keys} index=0
+    1.192s  parsed                  [main.[0].[0]]       0ms  ['call', 'policy']→['tool_name', 'args', 'call_id', 'error', 'needs_approval', 'approval_payload', 'max_result_chars', 'timeout']
+              in  call={3 keys} policy=<ToolPolicy>
+              out tool_name='web_search' args={1 keys} call_id='call_878900cc05' error='' needs_approval=False approval_payload={4 keys} max_result_chars=100000 timeout=None
+    1.192s  route_1                 [main.[0].[0]]       0ms  ['needs_approval']→['target', 'matched', '__branch_target__']
+              in  needs_approval=False
+              out target='auto' matched='default' __branch_target__='auto'
+    1.192s  auto                    [main.[0].[0]]       0ms  []→['decision']
+              out decision={2 keys}
+    1.192s  run                     [main.[0].[0]]       5ms  ['tool_name', 'args', 'call_id', 'error', 'auto_decision', 'max_result_chars']→['tool_message']
+              in  tool_name='web_search' args={1 keys} call_id='call_878900cc05' error='' auto_decision={2 keys} max_result_chars=100000
+              out tool_message={5 keys}
+    1.195s  adapted                 [main.[0]]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='' tool_calls=[1 items] finish_reason='tool_calls'
+              out assistant_message=[1 items] tool_calls=[1 items] done=False finish_reason='tool_calls' truncated=False
+    1.195s  assistant               [main.[0]]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    1.195s  router                  [main.[0]]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=False exhausted=False tool_calls=[1 items]
+              out finished=False
+    1.195s  closed                  [main.[0]]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=False exhausted=False messages=[1 items]
+              out messages=[0 items]
+    1.195s  ended                   [main.[0]]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='tool_calls' truncated=False
+              out stopped_early=False truncated=False finish_reason='tool_calls'
+    1.195s  route_1                 [main.[0]]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=False
+              out target='tools' matched='default' __branch_target__='tools'
+    1.195s  calls                   [main.[0].[0]]       0ms  ['tool_calls']→['call', 'index']
+              in  tool_calls=[1 items]
+              out call={3 keys} index=0
+    1.195s  parsed                  [main.[0].[0]]       0ms  ['call', 'policy']→['tool_name', 'args', 'call_id', 'error', 'needs_approval', 'approval_payload', 'max_result_chars', 'timeout']
+              in  call={3 keys} policy=<ToolPolicy>
+              out tool_name='web_search' args={1 keys} call_id='call_12311c168a' error='' needs_approval=False approval_payload={4 keys} max_result_chars=100000 timeout=None
+    1.195s  route_1                 [main.[0].[0]]       0ms  ['needs_approval']→['target', 'matched', '__branch_target__']
+              in  needs_approval=False
+              out target='auto' matched='default' __branch_target__='auto'
+    1.195s  auto                    [main.[0].[0]]       0ms  []→['decision']
+              out decision={2 keys}
+    1.195s  run                     [main.[0].[0]]       5ms  ['tool_name', 'args', 'call_id', 'error', 'auto_decision', 'max_result_chars']→['tool_message']
+              in  tool_name='web_search' args={1 keys} call_id='call_12311c168a' error='' auto_decision={2 keys} max_result_chars=100000
+              out tool_message={5 keys}
+    1.197s  gathered                [main.[0].__collect__]       0ms  ['tool_messages']→['messages']
+              in  tool_messages=[1 items]
+              out messages=[1 items]
+    1.197s  counter                 [main.[0].params.p.news.__loop_0__#1]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=1
+              out turns=2 notice=[0 items] exhausted=False
+    1.197s  asked                   [main.[0].params.p.news.__loop_0__#1]       0ms  ['messages']→['text']
+              in  messages=[3 items]
+              out text='Research Red River Textiles for a sales meeting: n…(+83)'
+    1.197s  planned                 [main.[0].params.p.news.__loop_0__#1]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[3 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[3 items] tokens=393
+    1.197s  compacted               [main.[0].params.p.news.__loop_0__#1]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[3 items] summary=''
+              out messages=[3 items] compacted=False dropped=0
+    1.197s  recalled                [main.[0].params.p.news.__loop_0__#1]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: n…(+83)' limit=5 deadline=8.0
+              out context=None count=0
+    1.197s  matched                 [main.[0].params.p.news.__loop_0__#1]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: n…(+83)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    1.197s  assembled               [main.[0].params.p.news.__loop_0__#1]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[3 items] notices=[0 items]
+              out messages=[4 items] count=4
+    1.197s  cached                  [main.[0].params.p.news.__loop_0__#1]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[4 items] breakpoints=1
+              out messages=[4 items] marked=1
+    1.197s  choice                  [main.[0].params.p.news.__loop_0__#1]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    1.197s  llm                     [main.[0].params.p.news.__loop_0__#1]     554ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[4 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='' finish_reason='tool_calls' model_used='assistant' tool_calls=[1 items] usage={6 keys} cost_usd=None extras={3 keys}
+    1.201s  gathered                [main.[0].__collect__]       0ms  ['tool_messages']→['messages']
+              in  tool_messages=[1 items]
+              out messages=[1 items]
+    1.201s  counter                 [main.[0].params.p.people.__loop_0__#1]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=1
+              out turns=2 notice=[0 items] exhausted=False
+    1.201s  asked                   [main.[0].params.p.people.__loop_0__#1]       0ms  ['messages']→['text']
+              in  messages=[3 items]
+              out text='Research Red River Textiles for a sales meeting: t…(+83)'
+    1.201s  planned                 [main.[0].params.p.people.__loop_0__#1]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[3 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[3 items] tokens=393
+    1.201s  compacted               [main.[0].params.p.people.__loop_0__#1]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[3 items] summary=''
+              out messages=[3 items] compacted=False dropped=0
+    1.201s  recalled                [main.[0].params.p.people.__loop_0__#1]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: t…(+83)' limit=5 deadline=8.0
+              out context=None count=0
+    1.201s  matched                 [main.[0].params.p.people.__loop_0__#1]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: t…(+83)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    1.201s  assembled               [main.[0].params.p.people.__loop_0__#1]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[3 items] notices=[0 items]
+              out messages=[4 items] count=4
+    1.201s  cached                  [main.[0].params.p.people.__loop_0__#1]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[4 items] breakpoints=1
+              out messages=[4 items] marked=1
+    1.201s  choice                  [main.[0].params.p.people.__loop_0__#1]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    1.201s  llm                     [main.[0].params.p.people.__loop_0__#1]     553ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[4 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='' finish_reason='tool_calls' model_used='assistant' tool_calls=[1 items] usage={6 keys} cost_usd=None extras={3 keys}
+    1.238s  adapted                 [main.[0]]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='' tool_calls=[1 items] finish_reason='tool_calls'
+              out assistant_message=[1 items] tool_calls=[1 items] done=False finish_reason='tool_calls' truncated=False
+    1.238s  assistant               [main.[0]]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    1.238s  router                  [main.[0]]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=False exhausted=False tool_calls=[1 items]
+              out finished=False
+    1.238s  closed                  [main.[0]]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=False exhausted=False messages=[1 items]
+              out messages=[0 items]
+    1.238s  ended                   [main.[0]]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='tool_calls' truncated=False
+              out stopped_early=False truncated=False finish_reason='tool_calls'
+    1.238s  route_1                 [main.[0]]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=False
+              out target='tools' matched='default' __branch_target__='tools'
+    1.238s  calls                   [main.[0].[0]]       0ms  ['tool_calls']→['call', 'index']
+              in  tool_calls=[1 items]
+              out call={3 keys} index=0
+    1.238s  parsed                  [main.[0].[0]]       0ms  ['call', 'policy']→['tool_name', 'args', 'call_id', 'error', 'needs_approval', 'approval_payload', 'max_result_chars', 'timeout']
+              in  call={3 keys} policy=<ToolPolicy>
+              out tool_name='web_search' args={1 keys} call_id='call_1fe77f6e5f' error='' needs_approval=False approval_payload={4 keys} max_result_chars=100000 timeout=None
+    1.238s  route_1                 [main.[0].[0]]       0ms  ['needs_approval']→['target', 'matched', '__branch_target__']
+              in  needs_approval=False
+              out target='auto' matched='default' __branch_target__='auto'
+    1.238s  auto                    [main.[0].[0]]       0ms  []→['decision']
+              out decision={2 keys}
+    1.239s  run                     [main.[0].[0]]      19ms  ['tool_name', 'args', 'call_id', 'error', 'auto_decision', 'max_result_chars']→['tool_message']
+              in  tool_name='web_search' args={1 keys} call_id='call_1fe77f6e5f' error='' auto_decision={2 keys} max_result_chars=100000
+              out tool_message={5 keys}
+    1.257s  gathered                [main.[0].__collect__]       0ms  ['tool_messages']→['messages']
+              in  tool_messages=[1 items]
+              out messages=[1 items]
+    1.257s  counter                 [main.[0].params.p.website.__loop_0__#1]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=1
+              out turns=2 notice=[0 items] exhausted=False
+    1.257s  asked                   [main.[0].params.p.website.__loop_0__#1]       0ms  ['messages']→['text']
+              in  messages=[3 items]
+              out text='Research Red River Textiles for a sales meeting: w…(+119)'
+    1.257s  planned                 [main.[0].params.p.website.__loop_0__#1]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[3 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[3 items] tokens=408
+    1.258s  compacted               [main.[0].params.p.website.__loop_0__#1]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[3 items] summary=''
+              out messages=[3 items] compacted=False dropped=0
+    1.258s  recalled                [main.[0].params.p.website.__loop_0__#1]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: w…(+119)' limit=5 deadline=8.0
+              out context=None count=0
+    1.258s  matched                 [main.[0].params.p.website.__loop_0__#1]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: w…(+119)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    1.258s  assembled               [main.[0].params.p.website.__loop_0__#1]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[3 items] notices=[0 items]
+              out messages=[4 items] count=4
+    1.258s  cached                  [main.[0].params.p.website.__loop_0__#1]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[4 items] breakpoints=1
+              out messages=[4 items] marked=1
+    1.258s  choice                  [main.[0].params.p.website.__loop_0__#1]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    1.258s  llm                     [main.[0].params.p.website.__loop_0__#1]     604ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[4 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='' finish_reason='tool_calls' model_used='assistant' tool_calls=[1 items] usage={6 keys} cost_usd=None extras={3 keys}
+    1.751s  adapted                 [main.[0].params.p.news.__loop_0__#1]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='' tool_calls=[1 items] finish_reason='tool_calls'
+              out assistant_message=[1 items] tool_calls=[1 items] done=False finish_reason='tool_calls' truncated=False
+    1.751s  assistant               [main.[0].params.p.news.__loop_0__#1]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    1.752s  router                  [main.[0].params.p.news.__loop_0__#1]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=False exhausted=False tool_calls=[1 items]
+              out finished=False
+    1.752s  closed                  [main.[0].params.p.news.__loop_0__#1]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=False exhausted=False messages=[1 items]
+              out messages=[0 items]
+    1.752s  ended                   [main.[0].params.p.news.__loop_0__#1]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='tool_calls' truncated=False
+              out stopped_early=False truncated=False finish_reason='tool_calls'
+    1.752s  route_1                 [main.[0].params.p.news.__loop_0__#1]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=False
+              out target='tools' matched='default' __branch_target__='tools'
+    1.752s  calls                   [main.[0].params.p.news.__loop_0__#1.[0]]       0ms  ['tool_calls']→['call', 'index']
+              in  tool_calls=[1 items]
+              out call={3 keys} index=0
+    1.752s  parsed                  [main.[0].params.p.news.__loop_0__#1.[0]]       0ms  ['call', 'policy']→['tool_name', 'args', 'call_id', 'error', 'needs_approval', 'approval_payload', 'max_result_chars', 'timeout']
+              in  call={3 keys} policy=<ToolPolicy>
+              out tool_name='fetch_page' args={1 keys} call_id='call_a700c96ca3' error='' needs_approval=False approval_payload={4 keys} max_result_chars=100000 timeout=None
+    1.752s  route_1                 [main.[0].params.p.news.__loop_0__#1.[0]]       0ms  ['needs_approval']→['target', 'matched', '__branch_target__']
+              in  needs_approval=False
+              out target='auto' matched='default' __branch_target__='auto'
+    1.752s  auto                    [main.[0].params.p.news.__loop_0__#1.[0]]       0ms  []→['decision']
+              out decision={2 keys}
+    1.752s  run                     [main.[0].params.p.news.__loop_0__#1.[0]]      26ms  ['tool_name', 'args', 'call_id', 'error', 'auto_decision', 'max_result_chars']→['tool_message']
+              in  tool_name='fetch_page' args={1 keys} call_id='call_a700c96ca3' error='' auto_decision={2 keys} max_result_chars=100000
+              out tool_message={5 keys}
+    1.755s  adapted                 [main.[0].params.p.people.__loop_0__#1]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='' tool_calls=[1 items] finish_reason='tool_calls'
+              out assistant_message=[1 items] tool_calls=[1 items] done=False finish_reason='tool_calls' truncated=False
+    1.755s  assistant               [main.[0].params.p.people.__loop_0__#1]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    1.755s  router                  [main.[0].params.p.people.__loop_0__#1]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=False exhausted=False tool_calls=[1 items]
+              out finished=False
+    1.755s  closed                  [main.[0].params.p.people.__loop_0__#1]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=False exhausted=False messages=[1 items]
+              out messages=[0 items]
+    1.755s  ended                   [main.[0].params.p.people.__loop_0__#1]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='tool_calls' truncated=False
+              out stopped_early=False truncated=False finish_reason='tool_calls'
+    1.755s  route_1                 [main.[0].params.p.people.__loop_0__#1]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=False
+              out target='tools' matched='default' __branch_target__='tools'
+    1.755s  calls                   [main.[0].params.p.people.__loop_0__#1.[0]]       0ms  ['tool_calls']→['call', 'index']
+              in  tool_calls=[1 items]
+              out call={3 keys} index=0
+    1.755s  parsed                  [main.[0].params.p.people.__loop_0__#1.[0]]       0ms  ['call', 'policy']→['tool_name', 'args', 'call_id', 'error', 'needs_approval', 'approval_payload', 'max_result_chars', 'timeout']
+              in  call={3 keys} policy=<ToolPolicy>
+              out tool_name='fetch_page' args={1 keys} call_id='call_7390f7b22c' error='' needs_approval=False approval_payload={4 keys} max_result_chars=100000 timeout=None
+    1.755s  route_1                 [main.[0].params.p.people.__loop_0__#1.[0]]       0ms  ['needs_approval']→['target', 'matched', '__branch_target__']
+              in  needs_approval=False
+              out target='auto' matched='default' __branch_target__='auto'
+    1.755s  auto                    [main.[0].params.p.people.__loop_0__#1.[0]]       0ms  []→['decision']
+              out decision={2 keys}
+    1.755s  run                     [main.[0].params.p.people.__loop_0__#1.[0]]      22ms  ['tool_name', 'args', 'call_id', 'error', 'auto_decision', 'max_result_chars']→['tool_message']
+              in  tool_name='fetch_page' args={1 keys} call_id='call_7390f7b22c' error='' auto_decision={2 keys} max_result_chars=100000
+              out tool_message={5 keys}
+    1.778s  gathered                [main.[0].params.p.people.__loop_0__#1.__collect__]       0ms  ['tool_messages']→['messages']
+              in  tool_messages=[1 items]
+              out messages=[1 items]
+    1.778s  counter                 [main.[0].params.p.people.__loop_0__#2]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=2
+              out turns=3 notice=[0 items] exhausted=False
+    1.778s  asked                   [main.[0].params.p.people.__loop_0__#2]       0ms  ['messages']→['text']
+              in  messages=[5 items]
+              out text='Research Red River Textiles for a sales meeting: t…(+83)'
+    1.778s  planned                 [main.[0].params.p.people.__loop_0__#2]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[5 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[5 items] tokens=479
+    1.778s  compacted               [main.[0].params.p.people.__loop_0__#2]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[5 items] summary=''
+              out messages=[5 items] compacted=False dropped=0
+    1.778s  recalled                [main.[0].params.p.people.__loop_0__#2]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: t…(+83)' limit=5 deadline=8.0
+              out context=None count=0
+    1.778s  matched                 [main.[0].params.p.people.__loop_0__#2]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: t…(+83)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    1.778s  assembled               [main.[0].params.p.people.__loop_0__#2]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[5 items] notices=[0 items]
+              out messages=[6 items] count=6
+    1.778s  cached                  [main.[0].params.p.people.__loop_0__#2]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[6 items] breakpoints=1
+              out messages=[6 items] marked=1
+    1.778s  choice                  [main.[0].params.p.people.__loop_0__#2]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    1.779s  gathered                [main.[0].params.p.news.__loop_0__#1.__collect__]       0ms  ['tool_messages']→['messages']
+              in  tool_messages=[1 items]
+              out messages=[1 items]
+    1.779s  llm                     [main.[0].params.p.people.__loop_0__#2]     555ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[6 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='Here is what I found: {"results": [{"title": "Red …(+691)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys}
+    1.780s  counter                 [main.[0].params.p.news.__loop_0__#2]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=2
+              out turns=3 notice=[0 items] exhausted=False
+    1.780s  asked                   [main.[0].params.p.news.__loop_0__#2]       0ms  ['messages']→['text']
+              in  messages=[5 items]
+              out text='Research Red River Textiles for a sales meeting: n…(+83)'
+    1.780s  planned                 [main.[0].params.p.news.__loop_0__#2]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[5 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[5 items] tokens=516
+    1.780s  compacted               [main.[0].params.p.news.__loop_0__#2]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[5 items] summary=''
+              out messages=[5 items] compacted=False dropped=0
+    1.781s  recalled                [main.[0].params.p.news.__loop_0__#2]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: n…(+83)' limit=5 deadline=8.0
+              out context=None count=0
+    1.781s  matched                 [main.[0].params.p.news.__loop_0__#2]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: n…(+83)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    1.781s  assembled               [main.[0].params.p.news.__loop_0__#2]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[5 items] notices=[0 items]
+              out messages=[6 items] count=6
+    1.781s  cached                  [main.[0].params.p.news.__loop_0__#2]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[6 items] breakpoints=1
+              out messages=[6 items] marked=1
+    1.781s  choice                  [main.[0].params.p.news.__loop_0__#2]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    1.781s  llm                     [main.[0].params.p.news.__loop_0__#2]     554ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[6 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='Here is what I found: {"results": [{"title": "Red …(+826)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys}
+    1.862s  adapted                 [main.[0].params.p.website.__loop_0__#1]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='' tool_calls=[1 items] finish_reason='tool_calls'
+              out assistant_message=[1 items] tool_calls=[1 items] done=False finish_reason='tool_calls' truncated=False
+    1.862s  assistant               [main.[0].params.p.website.__loop_0__#1]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    1.862s  router                  [main.[0].params.p.website.__loop_0__#1]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=False exhausted=False tool_calls=[1 items]
+              out finished=False
+    1.862s  closed                  [main.[0].params.p.website.__loop_0__#1]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=False exhausted=False messages=[1 items]
+              out messages=[0 items]
+    1.862s  ended                   [main.[0].params.p.website.__loop_0__#1]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='tool_calls' truncated=False
+              out stopped_early=False truncated=False finish_reason='tool_calls'
+    1.862s  route_1                 [main.[0].params.p.website.__loop_0__#1]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=False
+              out target='tools' matched='default' __branch_target__='tools'
+    1.862s  calls                   [main.[0].params.p.website.__loop_0__#1.[0]]       0ms  ['tool_calls']→['call', 'index']
+              in  tool_calls=[1 items]
+              out call={3 keys} index=0
+    1.862s  parsed                  [main.[0].params.p.website.__loop_0__#1.[0]]       0ms  ['call', 'policy']→['tool_name', 'args', 'call_id', 'error', 'needs_approval', 'approval_payload', 'max_result_chars', 'timeout']
+              in  call={3 keys} policy=<ToolPolicy>
+              out tool_name='fetch_page' args={1 keys} call_id='call_16c120b15b' error='' needs_approval=False approval_payload={4 keys} max_result_chars=100000 timeout=None
+    1.862s  route_1                 [main.[0].params.p.website.__loop_0__#1.[0]]       0ms  ['needs_approval']→['target', 'matched', '__branch_target__']
+              in  needs_approval=False
+              out target='auto' matched='default' __branch_target__='auto'
+    1.862s  auto                    [main.[0].params.p.website.__loop_0__#1.[0]]       0ms  []→['decision']
+              out decision={2 keys}
+    1.862s  run                     [main.[0].params.p.website.__loop_0__#1.[0]]      23ms  ['tool_name', 'args', 'call_id', 'error', 'auto_decision', 'max_result_chars']→['tool_message']
+              in  tool_name='fetch_page' args={1 keys} call_id='call_16c120b15b' error='' auto_decision={2 keys} max_result_chars=100000
+              out tool_message={5 keys}
+    1.886s  gathered                [main.[0].params.p.website.__loop_0__#1.__collect__]       0ms  ['tool_messages']→['messages']
+              in  tool_messages=[1 items]
+              out messages=[1 items]
+    1.886s  counter                 [main.[0].params.p.website.__loop_0__#2]       0ms  ['turns']→['turns', 'notice', 'exhausted']
+              in  turns=2
+              out turns=3 notice=[0 items] exhausted=False
+    1.886s  asked                   [main.[0].params.p.website.__loop_0__#2]       0ms  ['messages']→['text']
+              in  messages=[5 items]
+              out text='Research Red River Textiles for a sales meeting: w…(+119)'
+    1.886s  planned                 [main.[0].params.p.website.__loop_0__#2]       0ms  ['messages', 'budget', 'keep_recent', 'trigger_ratio', 'reserved_tokens']→['needed', 'pinned', 'summarize', 'keep', 'tokens']
+              in  messages=[5 items] budget=100000 keep_recent=6 trigger_ratio=0.75 reserved_tokens=126
+              out needed=False pinned=[0 items] summarize=[0 items] keep=[5 items] tokens=531
+    1.886s  compacted               [main.[0].params.p.website.__loop_0__#2]       0ms  ['pinned', 'summarize', 'keep', 'summary']→['messages', 'compacted', 'dropped']
+              in  pinned=[0 items] summarize=[0 items] keep=[5 items] summary=''
+              out messages=[5 items] compacted=False dropped=0
+    1.886s  recalled                [main.[0].params.p.website.__loop_0__#2]       0ms  ['query', 'limit', 'deadline']→['context', 'count']
+              in  query='Research Red River Textiles for a sales meeting: w…(+119)' limit=5 deadline=8.0
+              out context=None count=0
+    1.886s  matched                 [main.[0].params.p.website.__loop_0__#2]       0ms  ['query', 'limit']→['message', 'notices', 'names', 'count']
+              in  query='Research Red River Textiles for a sales meeting: w…(+119)' limit=3
+              out message=None notices=[0 items] names=[0 items] count=0
+    1.886s  assembled               [main.[0].params.p.website.__loop_0__#2]       0ms  ['system', 'messages', 'notices']→['messages', 'count']
+              in  system='You research one company for a sales meeting. Use …(+123)' messages=[5 items] notices=[0 items]
+              out messages=[6 items] count=6
+    1.886s  cached                  [main.[0].params.p.website.__loop_0__#2]       0ms  ['messages', 'breakpoints']→['messages', 'marked']
+              in  messages=[6 items] breakpoints=1
+              out messages=[6 items] marked=1
+    1.887s  choice                  [main.[0].params.p.website.__loop_0__#2]       0ms  ['last_turn']→['tool_choice']
+              in  last_turn=False
+              out tool_choice=None
+    1.887s  llm                     [main.[0].params.p.website.__loop_0__#2]     605ms  ['messages', 'temperature', 'tools']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  messages=[6 items] temperature=0.0 tools=[2 items]
+              out role='assistant' content='Here is what I found: {"results": [{"title": "Red …(+826)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys}
+    2.334s  adapted                 [main.[0].params.p.people.__loop_0__#2]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='Here is what I found: {"results": [{"title": "Red …(+691)' tool_calls=[0 items] finish_reason='stop'
+              out assistant_message=[1 items] tool_calls=[0 items] done=True finish_reason='stop' truncated=False
+    2.334s  assistant               [main.[0].params.p.people.__loop_0__#2]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    2.334s  router                  [main.[0].params.p.people.__loop_0__#2]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=True exhausted=False tool_calls=[0 items]
+              out finished=True
+    2.334s  closed                  [main.[0].params.p.people.__loop_0__#2]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=True exhausted=False messages=[1 items]
+              out messages=[0 items]
+    2.334s  ended                   [main.[0].params.p.people.__loop_0__#2]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='stop' truncated=False
+              out stopped_early=False truncated=False finish_reason='stop'
+    2.334s  route_1                 [main.[0].params.p.people.__loop_0__#2]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=True
+              out target='answer' matched='finished == True' __branch_target__='answer'
+    2.334s  answer                  [main.[0]]       0ms  ['messages']→['final']
+              in  messages=[6 items]
+              out final={3 keys}
+    2.335s  adapted                 [main.[0].params.p.news.__loop_0__#2]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='Here is what I found: {"results": [{"title": "Red …(+826)' tool_calls=[0 items] finish_reason='stop'
+              out assistant_message=[1 items] tool_calls=[0 items] done=True finish_reason='stop' truncated=False
+    2.335s  assistant               [main.[0].params.p.news.__loop_0__#2]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    2.335s  router                  [main.[0].params.p.news.__loop_0__#2]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=True exhausted=False tool_calls=[0 items]
+              out finished=True
+    2.335s  closed                  [main.[0].params.p.news.__loop_0__#2]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=True exhausted=False messages=[1 items]
+              out messages=[0 items]
+    2.336s  ended                   [main.[0].params.p.news.__loop_0__#2]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='stop' truncated=False
+              out stopped_early=False truncated=False finish_reason='stop'
+    2.336s  route_1                 [main.[0].params.p.news.__loop_0__#2]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=True
+              out target='answer' matched='finished == True' __branch_target__='answer'
+    2.336s  answer                  [main.[0]]       0ms  ['messages']→['final']
+              in  messages=[6 items]
+              out final={3 keys}
+    2.492s  adapted                 [main.[0].params.p.website.__loop_0__#2]       0ms  ['content', 'tool_calls', 'finish_reason']→['assistant_message', 'tool_calls', 'done', 'finish_reason', 'truncated']
+              in  content='Here is what I found: {"results": [{"title": "Red …(+826)' tool_calls=[0 items] finish_reason='stop'
+              out assistant_message=[1 items] tool_calls=[0 items] done=True finish_reason='stop' truncated=False
+    2.492s  assistant               [main.[0].params.p.website.__loop_0__#2]       0ms  ['messages']→['messages']
+              in  messages=[1 items]
+              out messages=[1 items]
+    2.492s  router                  [main.[0].params.p.website.__loop_0__#2]       0ms  ['done', 'exhausted', 'tool_calls']→['finished']
+              in  done=True exhausted=False tool_calls=[0 items]
+              out finished=True
+    2.492s  closed                  [main.[0].params.p.website.__loop_0__#2]       0ms  ['finished', 'exhausted', 'messages']→['messages']
+              in  finished=True exhausted=False messages=[1 items]
+              out messages=[0 items]
+    2.492s  ended                   [main.[0].params.p.website.__loop_0__#2]       0ms  ['exhausted', 'finish_reason', 'truncated']→['stopped_early', 'truncated', 'finish_reason']
+              in  exhausted=False finish_reason='stop' truncated=False
+              out stopped_early=False truncated=False finish_reason='stop'
+    2.492s  route_1                 [main.[0].params.p.website.__loop_0__#2]       0ms  ['finished']→['target', 'matched', '__branch_target__']
+              in  finished=True
+              out target='answer' matched='finished == True' __branch_target__='answer'
+    2.492s  answer                  [main.[0]]       0ms  ['messages']→['final']
+              in  messages=[6 items]
+              out final={3 keys}
+    2.492s  facts                   [main.[0]]       0ms  ['email', 'company', 'contacts', 'history', 'meetings', 'memory', 'website', 'news', 'people']→['text']
+              in  email={7 keys} company={7 keys} contacts=[1 items] history=[0 items] meetings=[0 items] memory=[0 items] website={3 keys} news={3 keys} people={3 keys}
+              out text='- Profile: Red River Textiles — Textiles & garment…(+2859)'
+    2.492s  brief                   [main.[0]]     558ms  ['prompt', 'temperature', 'company', 'evidence']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras']
+              in  prompt={2 keys} temperature=0.0 company='Red River Textiles' evidence='- Profile: Red River Textiles — Textiles & garment…(+2859)'
+              out role='assistant' content='# Meeting brief: Red River Textiles\n\n- Profile: Re…(+2896)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys}
+    3.050s  check                   [main.[0]]       1ms  ['brief', 'company']→['ok', 'problems']
+              in  brief='# Meeting brief: Red River Textiles\n\n- Profile: Re…(+2896)' company={7 keys}
+              out ok=True problems=[0 items]
+    3.052s  route_3                 [main.[0]]       0ms  ['ok']→['target', 'matched', '__branch_target__']
+              in  ok=True
+              out target='ask' matched='ok == True' __branch_target__='ask'
+    3.052s  ask                     [main.[0]]       0ms  ['email', 'company', 'brief', 'deliver']→['outcome']
+              in  email={7 keys} company={7 keys} brief='# Meeting brief: Red River Textiles\n\n- Profile: Re…(+2896)' deliver=False
+              out outcome={5 keys}
+    3.052s  done                    [main.[0]]       0ms  ['c']→['outcome']
+              in  c={5 keys}
+              out outcome={5 keys}
+    3.052s  out                     [main.[0]]       0ms  ['item']→['sent']
+              in  item={5 keys}
+              out sent=True
+
+========================================================================
+SUMMARY  nodes=202  errors=0
+========================================================================

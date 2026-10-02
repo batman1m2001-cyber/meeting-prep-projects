@@ -1,0 +1,27 @@
+{
+  "trace_id": "e1e6f460-75b5-458d-87f1-4ef6a942a83f",
+  "workflow_name": "params",
+  "started_at": 786396.5084875,
+  "wall_started_at": 1790848547.1506078,
+  "ended_at": 786399.0405262,
+  "duration_ms": 2532.038699951954,
+  "node_count": 202,
+  "metadata": {
+    "project": "meeting-prep",
+    "version": "507ef797bc10",
+    "version_dirty": false,
+    "request_id": "e1e6f460-75b5-458d-87f1-4ef6a942a83f",
+    "user_id": "a3a751c8-0f90-45b6-9f7d-8962cc78b987",
+    "session_id": "bf289581-f42e-4f84-aaf7-1a9cd88e8540",
+    "origin": "eval",
+    "job": "golden",
+    "job_run": "20261001T095543-145541",
+    "key": "bluelotus-ocr",
+    "tags": [
+      "origin:eval",
+      "job:golden",
+      "job_run:20261001T095543-145541",
+      "key:bluelotus-ocr"
+    ]
+  }
+}

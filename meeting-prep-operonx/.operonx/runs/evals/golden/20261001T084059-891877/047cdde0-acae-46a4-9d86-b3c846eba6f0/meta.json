@@ -1,0 +1,25 @@
+{
+  "trace_id": "047cdde0-acae-46a4-9d86-b3c846eba6f0",
+  "workflow_name": "params",
+  "started_at": 781916.5882004,
+  "wall_started_at": 1790844066.4812853,
+  "ended_at": 781919.3098773,
+  "duration_ms": 2721.676900051534,
+  "node_count": 202,
+  "metadata": {
+    "project": "meeting-prep",
+    "request_id": "047cdde0-acae-46a4-9d86-b3c846eba6f0",
+    "user_id": "c69c06ba-038d-4a96-8271-e6aceccd8aaf",
+    "session_id": "f023c70c-dd42-4091-a7a5-956f0f97cb39",
+    "origin": "eval",
+    "job": "golden",
+    "job_run": "20261001T084059-891877",
+    "key": "halong-short",
+    "tags": [
+      "origin:eval",
+      "job:golden",
+      "job_run:20261001T084059-891877",
+      "key:halong-short"
+    ]
+  }
+}

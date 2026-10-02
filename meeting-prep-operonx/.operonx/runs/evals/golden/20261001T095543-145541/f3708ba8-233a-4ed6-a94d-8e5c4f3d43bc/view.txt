@@ -1,0 +1,41 @@
+========================================================================
+params   trace_id=f3708ba8-233a-4ed6-a94d-8e5c4f3d43bc   dur=556ms   nodes=10
+project=meeting-prep  version=507ef797bc10  version_dirty=False  request_id=f3708ba8-233a-4ed6-a94d-8e5c4f3d43bc  user_id=69f51790-339b-4d8b-b479-ad75a6da976c  session_id=b21632f1-44a3-49c2-a513-eb829c37a734  origin=eval  job=golden  job_run=20261001T095543-145541  key=colleague
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.000s  src                     [main]       0ms  []→['_transient_stream', 'items', 'last_ctx']
+              out _transient_stream=True items=1 last_ctx="('main', '[0]')"
+
+    0.000s  c                       [main.[0]]       0ms  ['item']→['email']
+              in  item='<dict n=7 transient>'
+              out email={7 keys}
+    0.000s  gate                    [main.[0]]       0ms  ['email']→['blocked', 'reason']
+              in  email={7 keys}
+              out blocked=False reason=None
+    0.000s  route_1                 [main.[0]]       0ms  ['blocked']→['target', 'matched', '__branch_target__']
+              in  blocked=False
+              out target='read' matched='default' __branch_target__='read'
+    0.000s  read                    [main.[0]]       0ms  ['email']→['text']
+              in  email={7 keys}
+              out text='From: Mai Hoang <mai.hoang@northwind-ai.example>\nS…(+38)'
+    0.000s  triage                  [main.[0]]     555ms  ['prompt', 'temperature', 'letter']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras', 'is_lead', 'intent', 'contact', 'error']
+              in  prompt={2 keys} temperature=0.0 letter='From: Mai Hoang <mai.hoang@northwind-ai.example>\nS…(+38)'
+              out role='assistant' content='{"is_lead": false, "intent": "question", "contact"…(+14)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys} is_lead=False intent='question' contact='Mai Hoang' error=None
+    0.556s  route_2                 [main.[0]]       0ms  ['is_lead']→['target', 'matched', '__branch_target__']
+              in  is_lead=False
+              out target='skip' matched='is_lead == False' __branch_target__='skip'
+    0.556s  skip                    [main.[0]]       0ms  ['intent']→['outcome']
+              in  intent='question'
+              out outcome={5 keys}
+    0.556s  done                    [main.[0]]       0ms  ['b']→['outcome']
+              in  b={5 keys}
+              out outcome={5 keys}
+    0.556s  out                     [main.[0]]       0ms  ['item']→['sent']
+              in  item={5 keys}
+              out sent=True
+
+========================================================================
+SUMMARY  nodes=10  errors=0
+========================================================================

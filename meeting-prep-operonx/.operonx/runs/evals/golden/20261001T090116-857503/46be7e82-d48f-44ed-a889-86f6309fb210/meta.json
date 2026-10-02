@@ -1,0 +1,27 @@
+{
+  "trace_id": "46be7e82-d48f-44ed-a889-86f6309fb210",
+  "workflow_name": "params",
+  "started_at": 783136.4919073,
+  "wall_started_at": 1790845286.5888934,
+  "ended_at": 783136.4923906,
+  "duration_ms": 0.4833000712096691,
+  "node_count": 7,
+  "metadata": {
+    "project": "meeting-prep",
+    "version": "ce2c6a081493",
+    "version_dirty": true,
+    "request_id": "46be7e82-d48f-44ed-a889-86f6309fb210",
+    "user_id": "f62473ef-6ec3-4cd4-9404-634225ba00de",
+    "session_id": "ae899d97-48bb-4702-839d-93052b2f7b89",
+    "origin": "eval",
+    "job": "golden",
+    "job_run": "20261001T090116-857503",
+    "key": "attack-vn",
+    "tags": [
+      "origin:eval",
+      "job:golden",
+      "job_run:20261001T090116-857503",
+      "key:attack-vn"
+    ]
+  }
+}

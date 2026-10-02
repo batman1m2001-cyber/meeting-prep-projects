@@ -1,0 +1,41 @@
+========================================================================
+params   trace_id=45035e07-1429-4a91-ac6b-1dd8cf498def   dur=506ms   nodes=10
+project=meeting-prep  version=3595de13792e  version_dirty=True  request_id=45035e07-1429-4a91-ac6b-1dd8cf498def  user_id=7916c7ca-96d6-4ae0-8e3f-ffe3ed521e4f  session_id=c679ea2a-1abe-4cd7-bab8-4871aca3af50  origin=eval  job=golden  job_run=20261001T094038-808316  key=auto-reply
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.000s  src                     [main]       0ms  []→['_transient_stream', 'items', 'last_ctx']
+              out _transient_stream=True items=1 last_ctx="('main', '[0]')"
+
+    0.000s  c                       [main.[0]]       0ms  ['item']→['email']
+              in  item='<dict n=7 transient>'
+              out email={7 keys}
+    0.000s  gate                    [main.[0]]       0ms  ['email']→['blocked', 'reason']
+              in  email={7 keys}
+              out blocked=False reason=None
+    0.000s  route_1                 [main.[0]]       0ms  ['blocked']→['target', 'matched', '__branch_target__']
+              in  blocked=False
+              out target='read' matched='default' __branch_target__='read'
+    0.000s  read                    [main.[0]]       0ms  ['email']→['text']
+              in  email={7 keys}
+              out text='From: Mail Delivery <mailer-daemon@lotus-logistics…(+87)'
+    0.000s  triage                  [main.[0]]     505ms  ['prompt', 'temperature', 'letter']→['role', 'content', 'finish_reason', 'model_used', 'tool_calls', 'usage', 'cost_usd', 'extras', 'is_lead', 'intent', 'contact', 'error']
+              in  prompt={2 keys} temperature=0.0 letter='From: Mail Delivery <mailer-daemon@lotus-logistics…(+87)'
+              out role='assistant' content='{"is_lead": false, "intent": "question", "contact"…(+18)' finish_reason='stop' model_used='assistant' tool_calls=[0 items] usage={6 keys} cost_usd=None extras={3 keys} is_lead=False intent='question' contact='Mail Delivery' error=None
+    0.505s  route_2                 [main.[0]]       0ms  ['is_lead']→['target', 'matched', '__branch_target__']
+              in  is_lead=False
+              out target='skip' matched='is_lead == False' __branch_target__='skip'
+    0.505s  skip                    [main.[0]]       0ms  ['intent']→['outcome']
+              in  intent='question'
+              out outcome={5 keys}
+    0.505s  done                    [main.[0]]       0ms  ['b']→['outcome']
+              in  b={5 keys}
+              out outcome={5 keys}
+    0.505s  out                     [main.[0]]       0ms  ['item']→['sent']
+              in  item={5 keys}
+              out sent=True
+
+========================================================================
+SUMMARY  nodes=10  errors=0
+========================================================================

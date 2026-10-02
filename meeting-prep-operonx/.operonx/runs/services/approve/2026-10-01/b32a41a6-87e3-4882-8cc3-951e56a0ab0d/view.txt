@@ -1,0 +1,17 @@
+========================================================================
+engine   trace_id=b32a41a6-87e3-4882-8cc3-951e56a0ab0d   dur=10ms   nodes=2
+project=meeting-prep  version=507ef797bc10  version_dirty=False  request_id=b32a41a6-87e3-4882-8cc3-951e56a0ab0d  user_id=8b9e214b-43cd-4df3-b593-5a54d604f855  session_id=5a9ec03f-4c5c-4d95-aedb-c319fc45059d  origin=service  service=approve  transport=http
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.000s  d                       [main]       9ms  ['draft', 'decision']→['reply']
+              in  draft='1' decision='approve'
+              out reply={2 keys}
+    0.009s  out                     [main]       0ms  ['item']→['sent']
+              in  item={2 keys}
+              out sent=True
+
+========================================================================
+SUMMARY  nodes=2  errors=0
+========================================================================

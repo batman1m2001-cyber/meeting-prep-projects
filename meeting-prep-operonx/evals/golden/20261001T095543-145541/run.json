@@ -1,0 +1,52 @@
+{
+  "job": "golden",
+  "run_id": "20261001T095543-145541",
+  "status": "ok",
+  "started": "2026-10-01T09:55:43+00:00",
+  "ended": "2026-10-01T09:55:55+00:00",
+  "resume_from": null,
+  "counts": {
+    "ok": 19,
+    "failed": 0,
+    "empty": 0,
+    "skipped": 0,
+    "timeout": 0
+  },
+  "error": null,
+  "graph": "golden_case",
+  "source": "D:\\meeting-prep-operonx\\datasets\\golden.jsonl",
+  "sink": null,
+  "key": "id",
+  "session": "per_item",
+  "concurrency": 4,
+  "max_inflight": null,
+  "on_error": "record",
+  "item_timeout": null,
+  "preflight": null,
+  "item_input": null,
+  "schedule": null,
+  "description": "",
+  "kind": "eval",
+  "dataset": "D:\\meeting-prep-operonx\\datasets\\golden.jsonl",
+  "evaluators": [
+    "judged"
+  ],
+  "threshold": 0.9,
+  "eval": {
+    "dataset": "D:\\meeting-prep-operonx\\datasets\\golden.jsonl",
+    "cases": 19,
+    "passed": 19,
+    "failed": 0,
+    "errored": 0,
+    "pass_rate": 1.0,
+    "threshold": 0.9,
+    "checks": {
+      "judged": {
+        "passed": 19,
+        "cases": 19
+      }
+    },
+    "p50_ms": 2701.321900007315,
+    "judge_cost_usd": null
+  }
+}

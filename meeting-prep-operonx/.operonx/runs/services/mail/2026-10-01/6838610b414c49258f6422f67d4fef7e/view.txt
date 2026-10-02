@@ -1,0 +1,22 @@
+========================================================================
+engine   trace_id=6838610b414c49258f6422f67d4fef7e   dur=24ms   nodes=4
+project=meeting-prep  version=3595de13792e  version_dirty=False  request_id=af662ba9-e9ed-4497-a9e2-e5a7886d09de  user_id=e9f8f059-0845-4701-aeea-bcf292ae66df  session_id=2e0efdcf-162c-4596-b1be-39522f129345  origin=service  service=mail  transport=webhook
+========================================================================
+
+TIMELINE  (chronological)
+
+    0.001s  src                     [main]       0ms  []→['_transient_stream', 'items', 'last_ctx']
+              out _transient_stream=True items=1 last_ctx="('main', '[0]')"
+
+    0.001s  got                     [main.[0]]      23ms  ['item']→['email', 'ours']
+              in  item='<dict n=15 transient>'
+              out email={7 keys} ours=True
+    0.024s  route_1                 [main.[0]]       0ms  ['ours']→['target', 'matched', '__branch_target__']
+              in  ours=True
+              out target='skip' matched='ours == True' __branch_target__='skip'
+    0.024s  skip                    [main.[0]]       0ms  []→['outcome']
+              out outcome={1 keys}
+
+========================================================================
+SUMMARY  nodes=4  errors=0
+========================================================================
