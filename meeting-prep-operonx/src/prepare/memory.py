@@ -89,3 +89,19 @@ def place_memory(messages: list = None) -> dict:
     while seat < len(rest) and rest[seat].get("role") == "system":
         seat += 1
     return {"messages": rest[:seat] + [{"role": "system", "content": f"{HEADING}\n{body}"}] + rest[seat:]}
+
+
+@op(bound="io")
+async def company_memory(website: list = None, news: list = None, people: list = None) -> dict:
+    """What the agents will start from, looked up before they start: the same recall each
+    agent's `context → recalled` step makes (same provider, same query, same limit), so
+    the agents' first turn finds it in the run memo and the network is asked once. It
+    changes nothing an agent sees; it makes the agents' memory a step on the canvas."""
+    provider = CompanyMemory()
+
+    async def known(task: list = None) -> list:
+        asked = next((m["content"] for m in reversed(task or []) if m.get("role") == "user"), "")
+        return [e.text for e in await provider.prefetch(asked, 5)]  # 5: gather_memory's default limit
+
+    website_, news_, people_ = await asyncio.gather(known(website), known(news), known(people))
+    return {"website": website_, "news": news_, "people": people_}
