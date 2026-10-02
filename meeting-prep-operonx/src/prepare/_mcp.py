@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import sys
 from typing import Any
 
@@ -17,6 +18,8 @@ async def call(tool: str, **args: Any) -> Any:
     _lock = _lock or asyncio.Lock()
     async with _lock:
         if _client is None:
-            server = MCPServer(name="crm", command=sys.executable, args=["-m", "prep_world.mcp_server"])
+            # a stdio child gets a bare environment: hand it the world's settings (PREP_DB_URL, …)
+            env = {k: v for k, v in os.environ.items() if k.startswith("PREP_")}
+            server = MCPServer(name="crm", command=sys.executable, args=["-m", "prep_world.mcp_server"], env=env)
             _client = await MCPClient(server).connect()
     return await _client.call_value(tool, args)

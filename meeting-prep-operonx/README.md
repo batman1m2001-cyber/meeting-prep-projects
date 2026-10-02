@@ -18,12 +18,15 @@ mail ─► screen ─► triage (LLM) ─► identify (CRM over MCP)
 
 ## Run
 
-```powershell
+```bash
 # the world: Mailpit + pgvector (once), the mock web, a model (the seminar runner's mock)
-cd ..\meeting-prep-world; docker compose up -d; uv run prep-seed; uv run prep-mocks
+(cd ../meeting-prep-world && docker compose up -d && uv run prep-seed && uv run prep-mocks)
 # here
 uv run operonx-run golden      # the eval: 19 cases, fails under 90%
-uv run operonx-serve           # :8200 — then: cd ..\meeting-prep-world; uv run prep-send lotus-intro
+uv run operonx-serve           # :8200 — then: (cd ../meeting-prep-world && uv run prep-send lotus-intro)
 ```
+
+Or the whole stack at once from the seminar repo: `./stack.sh up`. If 5433 is taken, set
+`PREP_DB_PORT` (docker) and `PREP_DB_URL` (every process) to another port.
 
 Needs operonx 1.12 (webhook, schedule, `agent["final"]`, `MCPClient.call_value`).

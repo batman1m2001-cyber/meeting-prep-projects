@@ -17,7 +17,7 @@ services:
 
   db:
     image: pgvector/pgvector:pg17
-    ports: ["5433:5432"]
+    ports: ["${PREP_DB_PORT:-5433}:5432"]
     environment:
       POSTGRES_USER: prep
       POSTGRES_PASSWORD: prep

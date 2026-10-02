@@ -1,6 +1,6 @@
 # Meeting Prep — the plan
 
-*2026-10-01. The seminar's running system (“Workflow Is All You Need”, `D:\ai-workflow-seminar\PLAN.md`
+*2026-10-01. The seminar's running system (“Workflow Is All You Need”, `ai-workflow-seminar/PLAN.md`
 v4) is big enough to need its own plan. This is it.*
 
 ## What it is
@@ -30,9 +30,9 @@ coroutine, so it survives a restart.
 
 | folder | holds | state |
 |---|---|---|
-| `D:\meeting-prep-world` | shared: Docker (Mailpit :1025/:8025, pgvector :5433), `prep_world` (world.yaml, golden.yaml, db, mail, MCP server, mocks :8100, score) | **done** — smoke test passes |
-| `D:\meeting-prep-operonx` | the system on OperonX: `Application` with a `webhook` service (mail), an `approve` service, a `schedule` service (morning sweep), jobs `golden` and `seed` | scaffolded |
-| `D:\meeting-prep-langgraph` | the same system on LangGraph: `StateGraph`, checkpointer, the same tools over MCP, a FastAPI webhook | scaffolded |
+| `meeting-prep-world` | shared: Docker (Mailpit :1025/:8025, pgvector :5433), `prep_world` (world.yaml, golden.yaml, db, mail, MCP server, mocks :8100, score) | **done** — smoke test passes |
+| `meeting-prep-operonx` | the system on OperonX: `Application` with a `webhook` service (mail), an `approve` service, a `schedule` service (morning sweep), jobs `golden` and `seed` | scaffolded |
+| `meeting-prep-langgraph` | the same system on LangGraph: `StateGraph`, checkpointer, the same tools over MCP, a FastAPI webhook | scaffolded |
 
 Both builds read the same world, answer the same golden emails, and are scored by the same
 `prep_world.score`. Ports: mocks 8100, OperonX app 8200, LangGraph app 8300; Mailpit's
