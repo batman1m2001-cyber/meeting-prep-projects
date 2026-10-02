@@ -14,7 +14,7 @@ prepare_brief(email_id, notify)
               └ not a customer / attack ─► no_brief     ─► Calendar Agent ─────┼─► Memory Agent ─► Report Agent ─► Human Approval
                                                         ─► Company Info Agent ┘                                    (a person: the run ends)
 deliver(approval_id, decision)          — on the approve link
-  decide ─ approved ─► Email Agent (send to sales) ∥ save to KB and memory ─► delivered
+  decide ─ approved ─► Email Agent (send to sales) ─► save to KB and memory ─► delivered
          └ rejected ─► not_delivered
 ```
 
@@ -31,7 +31,7 @@ deliver(approval_id, decision)          — on the approve link
 | **Memory Agent** | `memory` | `src/agents/memory_agent/` | **agent**: merges the three results with past memory, de-duplicates, says what is new; remembers facts and the research run | `memory__recall` `memory__history` `memory__user_profile` `memory__remember` |
 | **Report Agent** | `report` | `src/agents/report_agent/` | **agent**: the brief's six sections (intro, field, products, recent news, contacts, points to note) as Markdown and as an email | `report__render_markdown` `report__email_body` |
 | Human Approval — *"Review and approve the briefing"* | `review` | `src/human_approval/` | **a person**, not an agent: the brief is saved as a pending approval (`brd.approvals`) and sales is emailed it with Approve / Reject links; the run ends | `approval__request`, `mail__send` (to sales, pending approvals only) |
-| Send Brief / Save to KB | `deliver` (the `approve` service: `GET /approve?approval=&decision=`) | `src/deliver/` | the person's click → **Email Agent** sends the brief to sales (only with that approved approval) ∥ save to KB and memory | `mail__send` `mail__status` · `kb__save` `memory__remember` |
+| Send Brief / Save to KB | `deliver` (the `approve` service: `GET /approve?approval=&decision=`) | `src/deliver/` | the person's click → **Email Agent** sends the brief to sales (only with that approved approval), then saves it to KB and memory | `mail__send` `mail__status` · `kb__save` `memory__remember` |
 
 Six agents, one plain step, one person. Each agent = system prompt (a `.prompt` file) +
 its tools (its row in `src/agents/_shared/scopes.yaml`) + a loop until it answers with

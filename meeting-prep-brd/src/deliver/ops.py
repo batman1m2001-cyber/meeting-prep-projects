@@ -50,17 +50,13 @@ def save_calls(report: dict, approval_id: int) -> dict:
 
 
 @op
-def saved(ok: Optional[list] = None, error: Optional[list] = None) -> dict:
-    """Both saves done; a failed one is an error, not a quiet half-save."""
+def delivered(approval_id: int, message_id: str, status: str, ok: Optional[list] = None,
+              error: Optional[list] = None) -> dict:
+    """Sent, and both saves done; a failed save is an error, not a quiet half-save."""
     if not ok or not all(ok):
         raise ValueError(f"saving the brief failed: {[e for e in error or [] if e]}")
-    return {"saved": ["kb", "memory"]}
-
-
-@op
-def delivered(approval_id: int, message_id: str, status: str, saved: list) -> dict:
     return {"outcome": {"approval_id": approval_id, "status": "approved", "sent": [world()["us"]["sales"]],
-                        "message_id": message_id, "mail_status": status, "saved": saved}}
+                        "message_id": message_id, "mail_status": status, "saved": ["kb", "memory"]}}
 
 
 @op

@@ -39,9 +39,6 @@ def _find(query: str) -> list[dict]:
     return []
 
 
-@pytest.mark.xfail(strict=True, reason="deliver: the Email Agent sends the brief to sales (seen in Mailpit), "
-                   "but the final `delivered` node after the send ∥ save join never fires, so /approve "
-                   "answers without an outcome. Not fixed yet.")
 def test_prepare_then_approve_sends_the_brief_to_sales_and_saves_it():
     from operonx.app import Application
 
