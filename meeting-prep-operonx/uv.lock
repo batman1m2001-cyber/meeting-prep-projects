@@ -507,7 +507,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "meeting-prep-world", editable = "../meeting-prep-world" },
-    { name = "operonx", extras = ["openai"], specifier = ">=1.12.0" },
+    { name = "operonx", extras = ["openai"], specifier = ">=1.12.1" },
 ]
 
 [[package]]
@@ -564,7 +564,7 @@ wheels = [
 
 [[package]]
 name = "operonx"
-version = "1.12.0"
+version = "1.12.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "orjson" },
@@ -572,9 +572,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6c/97/52d0a800b1e65ec4b92dc59c635bdc0650e476fbf92b8daf8fd676550b3f/operonx-1.12.0.tar.gz", hash = "sha256:ab255c40f02aec85ad77b5f708781bc0c3899f171257dcbb966bcceb5d9ac6d9", size = 508339, upload-time = "2026-10-01T09:26:04.327Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/03/d7/364a67ff739b9d4e1dc9886a645ffe0ebb62d5b25be1fef2358b2bd317e2/operonx-1.12.1.tar.gz", hash = "sha256:4d670bc417a72ae8289a66843f43deab67ab7ad8c1ab7f9c15826c024092931c", size = 509052, upload-time = "2026-10-02T07:35:25.257Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ac/98/8dac67acc035e551666e6a3282b85649253f65388769811c8495427066d3/operonx-1.12.0-py3-none-any.whl", hash = "sha256:0ec8fe62151263ead5ae7d3bccb8202b5fe00161e9d02763df4235a68fcaf93c", size = 644714, upload-time = "2026-10-01T09:26:02.316Z" },
+    { url = "https://files.pythonhosted.org/packages/81/68/084aa8caf26e4a073f4720fbc16268b33ab972997e716349bac2282801e6/operonx-1.12.1-py3-none-any.whl", hash = "sha256:f69df5da7eb7ed1298fbfdbfebc8a680fca7a0387189cb23352f15292b36e0dd", size = 645377, upload-time = "2026-10-02T07:35:23.163Z" },
 ]
 
 [package.optional-dependencies]
