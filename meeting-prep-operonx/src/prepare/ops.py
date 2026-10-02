@@ -87,6 +87,7 @@ def _answer(final: dict = None) -> str:
     return (final or {}).get("content") or "(no answer)"
 
 
+# ── the memory agent's merge: every source into one evidence pack ───────────
 @op
 def evidence(email: dict, company: dict = None, contacts: list = None, history: list = None,
              meetings: list = None, memory: list = None, website: dict = None, news: dict = None,
@@ -101,7 +102,14 @@ def evidence(email: dict, company: dict = None, contacts: list = None, history: 
     lines += [f"Meeting {m['starts_at']}: {m['title']}" for m in meetings or []] or ["Meeting: none booked yet"]
     lines += [f"Memory: {m}" for m in memory or []]
     lines += [f"Research ({k}): {_answer(v)}" for k, v in (("website", website), ("news", news), ("people", people))]
-    return {"text": "\n".join(f"- {ln}" for ln in lines)}
+    return {"lines": lines}
+
+
+@op
+def dedupe(lines: list = None) -> dict:
+    """One evidence pack: a fact that came in twice (from two sources) is said once, in
+    first-seen order."""
+    return {"text": "\n".join(f"- {ln}" for ln in dict.fromkeys(lines or []))}
 
 
 @op
@@ -146,6 +154,13 @@ def held(company: dict = None, brief: str = None, problems: list = None) -> dict
     """The brief failed its check: nothing is sent."""
     return {"outcome": {"action": "held", "company": (company or {}).get("id"), "brief": brief, "sent": [],
                         "reason": problems}}
+
+
+@op
+def screened(blocked: dict = None, skipped: dict = None) -> dict:
+    """The email agent's verdict: a lead goes on; a blocked or skipped email ends here."""
+    outcome = blocked or skipped
+    return {"lead": outcome is None, "outcome": outcome}
 
 
 @op
