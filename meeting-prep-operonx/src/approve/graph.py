@@ -10,7 +10,7 @@ from approve import ops
 
 
 @graph
-def send_or_save(draft, decision):
+def send_brief_or_save(draft, decision):
     """Approve → the brief goes to sales and into memory. Reject → nothing."""
     decide = ops.decide(draft=draft, decision=decision)
     send = ops.send(draft=decide["decided"])
@@ -21,6 +21,6 @@ def send_or_save(draft, decision):
 
 @graph
 def approve(draft, decision):
-    done = send_or_save(draft=draft, decision=decision, name="send_or_save")
-    out = egress(item=done["reply"])
-    START >> done >> out >> END
+    send_or_save = send_brief_or_save(draft=draft, decision=decision)
+    out = egress(item=send_or_save["reply"])
+    START >> send_or_save >> out >> END

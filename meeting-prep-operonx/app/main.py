@@ -13,7 +13,8 @@
 from operonx.app import Application, Eval, Service, http, schedule, webhook
 
 from approve.graph import approve
-from golden.graph import golden_case, judged
+from golden.graph import golden_case
+from golden.judge import judged
 from inbox.graph import on_mail, sweep
 
 PORT = 8200

@@ -8,11 +8,11 @@ from operonx.app.serve import ingress
 from operonx.core.ops import if_
 
 from inbox import ops
-from prepare.graph import prepare
+from prepare import graph as prepare_graph
 
 
 @graph
-def inbox(item):
+def new_customer_email(item):
     """Email Inbox → New Customer Email."""
     fetch = ops.fetch(item=item)
     ignore = ops.ignore()
@@ -25,10 +25,10 @@ def inbox(item):
 @graph
 def on_mail():
     src = ingress()
-    new = inbox(item=src["item"], name="inbox")
-    brief = prepare(email=new["email"], deliver=True, name="prepare")
-    START >> src >> new >> if_(new["ours"] == True, END).else_(brief)  # noqa: E712
-    brief >> END
+    inbox = new_customer_email(item=src["item"])
+    prepare = prepare_graph.prepare(email=inbox["email"], deliver=True)
+    START >> src >> inbox >> if_(inbox["ours"] == True, END).else_(prepare)  # noqa: E712
+    prepare >> END
 
 
 @graph
@@ -37,5 +37,5 @@ def sweep():
     ids = ops.unread()
     one = ops.each(ids=ids["ids"])
     got = ops.fetch(item=one["item"])
-    brief = prepare(email=got["email"], deliver=True, name="prepare")
-    START >> src >> ids >> one >> got >> brief >> END
+    prepare = prepare_graph.prepare(email=got["email"], deliver=True)
+    START >> src >> ids >> one >> got >> prepare >> END

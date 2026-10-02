@@ -2,6 +2,8 @@
 and two plain LLM calls."""
 from __future__ import annotations
 
+import asyncio
+import re
 from email.utils import parseaddr
 
 from operonx import op
@@ -9,8 +11,15 @@ from prep_world import db, mail, world
 from prep_world.guard import leaks, looks_like_attack, visible_text
 
 from prepare import _mcp
+from prepare.memory import CompanyMemory
 
 APPROVE_URL = "http://127.0.0.1:8200/approve"
+
+HEADING = ("Known from past meetings and approved briefs with this company. Do not research these "
+           "again; verify or update them, and report what is new or changed:")
+
+# How OperonX renders recalled memory (`render_memory_block`; `gather_memory` labels it "memory").
+_BLOCK = re.compile(r"^<(memory|company_memory)>\n(.*)\n</\1>$", re.S)
 
 
 def _domain(address: str) -> str:
@@ -80,6 +89,44 @@ def research_tasks(company: dict = None) -> dict:
                                             f"Search the web and read what you find. Find out about {name} {focus}."}]
 
     return {"website": ask("what it does and sells"), "news": ask("news"), "people": ask("team")}
+
+
+# ── the research agents' memory (`CompanyMemory`, in memory.py) ─────────────
+@op
+def place_memory(messages: list = None) -> dict:
+    """Seat the recalled memory right after the system prompt.
+
+    OperonX appends the memory block after the conversation (built for per-query
+    memory). Ours is the same every turn of a run — one company, one task — so it
+    belongs in the stable prefix: the model reads it as background, not as the newest
+    user turn, and the prefix stays cacheable."""
+    msgs = [dict(m) for m in messages or [] if isinstance(m, dict)]
+    block = next((m for m in reversed(msgs) if m.get("role") == "user" and _BLOCK.match(str(m.get("content") or ""))),
+                 None)
+    if block is None:
+        return {"messages": msgs}
+    rest = [m for m in msgs if m is not block]
+    body = _BLOCK.match(block["content"]).group(2).strip()
+    seat = 0
+    while seat < len(rest) and rest[seat].get("role") == "system":
+        seat += 1
+    return {"messages": rest[:seat] + [{"role": "system", "content": f"{HEADING}\n{body}"}] + rest[seat:]}
+
+
+@op(bound="io")
+async def company_memory(website: list = None, news: list = None, people: list = None) -> dict:
+    """What the agents will start from, looked up before they start: the same recall each
+    agent's `context → recalled` step makes (same provider, same query, same limit), so
+    the agents' first turn finds it in the run memo and the network is asked once. It
+    changes nothing an agent sees; it makes the agents' memory a step on the canvas."""
+    provider = CompanyMemory()
+
+    async def known(task: list = None) -> list:
+        asked = next((m["content"] for m in reversed(task or []) if m.get("role") == "user"), "")
+        return [e.text for e in await provider.prefetch(asked, 5)]  # 5: gather_memory's default limit
+
+    website_, news_, people_ = await asyncio.gather(known(website), known(news), known(people))
+    return {"website": website_, "news": news_, "people": people_}
 
 
 # ── the brief ──────────────────────────────────────────────────────────────
@@ -157,8 +204,12 @@ def held(company: dict = None, brief: str = None, problems: list = None) -> dict
 
 
 @op
-def screened(blocked: dict = None, skipped: dict = None) -> dict:
-    """The email agent's verdict: a lead goes on; a blocked or skipped email ends here."""
+def screened(blocked: dict = None, skipped: dict = None, error: str = None) -> dict:
+    """The email agent's verdict: a lead goes on; a blocked or skipped email ends here.
+    A triage reply that failed (`error`: no parse, no answer) is no verdict: the run fails,
+    rather than its empty `is_lead` reading as a lead."""
+    if error:
+        raise RuntimeError(f"triage failed: {error}")
     outcome = blocked or skipped
     return {"lead": outcome is None, "outcome": outcome}
 
