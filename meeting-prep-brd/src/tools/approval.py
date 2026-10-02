@@ -5,7 +5,7 @@ import os
 
 from stores import brd
 
-from tools._server import MCPServer
+from tools._server import MCPServer, ToolError
 
 server = MCPServer("approval")
 TASKS = ("send_brief",)
@@ -20,10 +20,10 @@ def _link(approval_id: int, decision: str) -> str:
 def request(task: str, report_id: int, summary: str) -> dict:
     """Ask a person to approve a task (send_brief: send report `report_id` to sales and save it to the KB)."""
     if task not in TASKS:
-        raise ValueError(f"task must be one of {TASKS}, got {task!r}")
+        raise ToolError(f"task must be one of {TASKS}, got {task!r}")
     r = brd.report(report_id)
     if r is None:
-        raise ValueError(f"no report {report_id}")
+        raise ToolError(f"no report {report_id}")
     approval_id = brd.request_approval(task, {"report_id": report_id, "company_id": r["company_id"],
                                               "summary": summary})
     return {"approval_id": approval_id, "status": "pending",
@@ -35,7 +35,7 @@ def status(approval_id: int) -> dict:
     """A request's status: pending, approved or rejected, and who decided."""
     a = brd.approval(approval_id)
     if a is None:
-        raise ValueError(f"no approval {approval_id}")
+        raise ToolError(f"no approval {approval_id}")
     return {"approval_id": approval_id, "task": a["task"], "status": a["status"], "decided_by": a["decided_by"]}
 
 

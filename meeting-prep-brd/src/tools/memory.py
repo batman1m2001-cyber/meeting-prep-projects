@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from stores import brd
 
-from tools._server import MCPServer
+from tools._server import MCPServer, ToolError
 
 server = MCPServer("memory")
 KINDS = ("fact", "result", "research")
@@ -20,7 +20,7 @@ def recall(subject: str, query: str | None = None, k: int = 10) -> list[dict]:
 def remember(subject: str, kind: str, content: str, source: str | None = None) -> dict:
     """Remember one item about a subject. kind: fact | result | research (a research run: also added to history)."""
     if kind not in KINDS:
-        raise ValueError(f"kind must be one of {KINDS}, got {kind!r}")
+        raise ToolError(f"kind must be one of {KINDS}, got {kind!r}")
     stored = brd.remember(subject, kind, content, source)
     if kind == "research":
         stored["run_id"] = brd.add_research_run(subject, None, content, [source] if source else [])

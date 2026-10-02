@@ -5,7 +5,7 @@ import re
 
 from stores import brd
 
-from tools._server import MCPServer
+from tools._server import MCPServer, ToolError
 
 server = MCPServer("report")
 SECTIONS = ("Introduction", "Field", "Products", "Recent news", "Contacts", "Points to note")
@@ -30,7 +30,7 @@ def email_body(report_id: int) -> dict:
     """A stored report as a plain-text email: report_id, subject, body."""
     r = brd.report(report_id)
     if r is None:
-        raise ValueError(f"no report {report_id}")
+        raise ToolError(f"no report {report_id}")
     body = re.sub(r"^#+\s*", "", r["markdown"], flags=re.M)
     body = re.sub(r"\*\*(.+?)\*\*", r"\1", body)
     brd.set_email_body(report_id, body)

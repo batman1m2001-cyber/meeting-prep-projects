@@ -7,6 +7,7 @@ import urllib.request
 import pytest
 from prep_world import MAIL_API, golden, world
 
+from tools._server import ToolError
 from tools import approval, calendar, crm, kb, mail, memory, report, web
 
 DB, WEB, MAILPIT, ROUTER = 5434, 8100, 8025, 8000
@@ -50,7 +51,7 @@ def test_memory_remembers_once_and_recalls():
 def test_memory_research_runs_are_its_history():
     memory.remember("test-co", "research", "Researched Test Co: site and news.", "http://x/test")
     assert memory.history("test-co")[0]["summary"] == "Researched Test Co: site and news."
-    with pytest.raises(ValueError):
+    with pytest.raises(ToolError):
         memory.remember("test-co", "gossip", "no", None)
 
 
@@ -76,7 +77,7 @@ def test_approval_request_is_pending_with_its_links():
     a = approval.request("send_brief", r["report_id"], "brief for Lotus")
     assert a["status"] == "pending" and a["approve_url"].endswith(f"id={a['approval_id']}&decision=approve")
     assert approval.status(a["approval_id"])["status"] == "pending"
-    with pytest.raises(ValueError):
+    with pytest.raises(ToolError):
         approval.request("wire_money", r["report_id"], "no")
 
 
@@ -89,7 +90,7 @@ def test_web_search_fetch_and_news():
     news = web.news("Lotus Logistics", "lotus-logistics.example")
     assert [n["date"] for n in news] == sorted((n["date"] for n in news), reverse=True)
     assert news[0]["fresh"] and not news[-1]["fresh"]          # June is older than 30 days
-    with pytest.raises(ValueError):
+    with pytest.raises(ToolError):
         web.fetch("http://evil.example/")
 
 
@@ -103,7 +104,7 @@ def test_web_fetch_drops_the_hidden_instruction():
 def test_mail_reads_a_golden_email_without_a_mail_server():
     e = mail.read("golden:lotus-intro")
     assert e["id"] == "golden:lotus-intro" and e["from"] == "linh.tran@lotus-logistics.example"
-    with pytest.raises(ValueError):
+    with pytest.raises(ToolError):
         mail.read("golden:nope")
 
 

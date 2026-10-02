@@ -14,7 +14,7 @@ from email.utils import make_msgid
 
 from prep_world import MAIL_API, SMTP, golden, mail, world
 
-from tools._server import MCPServer
+from tools._server import MCPServer, ToolError
 
 server = MCPServer("mail")
 GOLDEN = "golden:"
@@ -37,7 +37,7 @@ def read(email_id: str) -> dict:
     if email_id.startswith(GOLDEN):
         g = next((e for e in golden() if e["id"] == email_id[len(GOLDEN):]), None)
         if g is None:
-            raise ValueError(f"no email {email_id!r}")
+            raise ToolError(f"no email {email_id!r}")
         return {**mail.as_email(g), "id": email_id}
     return mail.read(email_id)
 

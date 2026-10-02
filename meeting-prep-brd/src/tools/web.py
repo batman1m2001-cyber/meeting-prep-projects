@@ -10,7 +10,7 @@ from datetime import date
 from prep_world import WEB, world
 from prep_world.guard import visible_text
 
-from tools._server import MCPServer
+from tools._server import MCPServer, ToolError
 
 server = MCPServer("web")
 
@@ -30,7 +30,7 @@ def search(query: str, n: int = 5) -> list[dict]:
 def fetch(url: str) -> dict:
     """Read one web page as text: url, text."""
     if not url.startswith(WEB + "/web/"):
-        raise ValueError(f"only pages under {WEB}/web/ can be read")
+        raise ToolError(f"only pages under {WEB}/web/ can be read")
     return {"url": url, "text": visible_text(_get(url[len(WEB):]))}
 
 
