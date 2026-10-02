@@ -108,6 +108,10 @@ def evidence(email: dict, company: dict = None, contacts: list = None, history: 
 def check_brief(brief: str = None, company: dict = None) -> dict:
     us = world()["us"]["domain"]
     problems = leaks(brief or "", (us, (company or {}).get("domain", us)))
+    if not company:
+        # triage called it a lead, but no company in the CRM matches the sender (e.g. a
+        # colleague): hold it for a person rather than ask approval for nobody
+        problems = [*problems, "no known company for this sender"]
     return {"ok": not problems, "problems": problems}
 
 
