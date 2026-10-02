@@ -13,7 +13,7 @@ services:
       MP_WEBHOOK_URL: ${PREP_WEBHOOK:-http://host.docker.internal:8200/mail}
       MP_MAX_MESSAGES: "1000"
     extra_hosts: ["host.docker.internal:host-gateway"]
-    restart: unless-stopped
+    restart: "no"          # shared server: runs only while the seminar is up (stack.sh up|down)
 
   db:
     image: pgvector/pgvector:pg17
@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: prep
       POSTGRES_DB: prep
     volumes: [prep-db:/var/lib/postgresql/data]
-    restart: unless-stopped
+    restart: "no"          # shared server: runs only while the seminar is up (stack.sh up|down)
 
 volumes:
   prep-db:
