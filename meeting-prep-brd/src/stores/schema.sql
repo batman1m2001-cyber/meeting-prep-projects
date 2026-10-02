@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS brd.reports (
     created_at  timestamptz NOT NULL DEFAULT now()
 );
 
--- Human Approval Agent: nothing important runs before its row says approved.
+-- Human Approval (a person): nothing important runs before its row says approved.
 CREATE TABLE IF NOT EXISTS brd.approvals (
     id          serial PRIMARY KEY,
     task        text NOT NULL,

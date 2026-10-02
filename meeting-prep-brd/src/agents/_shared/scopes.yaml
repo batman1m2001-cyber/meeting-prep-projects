@@ -20,7 +20,7 @@ identities:
     tools: [memory__recall, memory__remember, memory__history, memory__user_profile]
   report_agent:
     tools: [report__render_markdown, report__email_body]
-  human_approval_agent:
-    tools: [approval__request, approval__status]
+  human_approval:                 # Human Approval (a person's gate; this step only asks)
+    tools: [approval__request, mail__send]
   deliver:                        # Send Brief / Save to KB (a step, not an agent)
     tools: [kb__save, memory__remember]

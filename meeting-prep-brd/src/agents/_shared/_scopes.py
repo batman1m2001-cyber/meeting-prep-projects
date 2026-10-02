@@ -31,7 +31,7 @@ def refusal(identity: str, tool: str, args: dict) -> str | None:
     if tool not in IDENTITIES[identity]["tools"]:
         return f"{identity} may not call {tool}"
     if tool == "mail__send":
-        return _send_refusal(args)
+        return _send_refusal(identity, args)
     if tool == "approval__request":
         report = brd.report(int(args["report_id"]))
         if report is None:
@@ -41,13 +41,15 @@ def refusal(identity: str, tool: str, args: dict) -> str | None:
     return None
 
 
-def _send_refusal(args: dict) -> str | None:
-    """The Email Agent sends only to sales, only an approved brief, and nothing that leaks."""
+def _send_refusal(identity: str, args: dict) -> str | None:
+    """Mail goes only to sales, and nothing that leaks. The Email Agent sends only
+    an approved brief; Human Approval only asks sales to review a pending one."""
     if str(args["to"]).strip().lower() != SALES:
         return f"mail may go only to {SALES}, not {args['to']!r}"
     approval = brd.approval(int(args["approval_id"]))
-    if approval is None or approval["status"] != "approved":
-        return f"approval {args['approval_id']} is not approved"
+    needed = "pending" if identity == "human_approval" else "approved"
+    if approval is None or approval["status"] != needed:
+        return f"approval {args['approval_id']} is not {needed}"
     problems = leaks(f"{args['subject']}\n{args['body']}", ALLOWED_DOMAINS)
     return f"the email leaks: {'; '.join(problems)}" if problems else None
 

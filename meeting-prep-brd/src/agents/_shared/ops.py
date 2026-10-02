@@ -78,10 +78,13 @@ def each_call(tool_calls: Optional[list] = None):
 
 @op
 def tool_results(messages: Any = None, alerts: Any = None) -> dict:
-    """A turn's tool messages and screen alerts, as lists for the loop's cells."""
-    def as_list(v: Any) -> list:
-        return [v] if isinstance(v, dict) else [x for x in v or [] if isinstance(x, dict)]
-    return {"messages": as_list(messages), "alerts": as_list(alerts)}
+    """A turn's tool messages and screen alerts, as lists for the loop's cells
+    (`.collect()` of a single call hands over the frame itself, not a list)."""
+    return {"messages": _dicts(messages), "alerts": _dicts(alerts)}
+
+
+def _dicts(value: Any) -> list:
+    return [value] if isinstance(value, dict) else [v for v in value or [] if isinstance(v, dict)]
 
 
 @op

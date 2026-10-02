@@ -1,7 +1,7 @@
 """mail: the sales inbox (Mailpit) and outgoing mail (SMTP).
 
-An id `golden:<id>` reads a golden email from the world instead of the inbox,
-so the eval runs the same Email Agent without a mail server.
+A golden id (`tools._golden`) reads a golden email from the world instead of
+the inbox, so the eval runs the same Email Agent without a mail server.
 """
 from __future__ import annotations
 
@@ -12,12 +12,12 @@ import urllib.request
 from email.message import EmailMessage
 from email.utils import make_msgid
 
-from prep_world import MAIL_API, SMTP, golden, mail, world
+from prep_world import MAIL_API, SMTP, mail, world
 
+from tools._golden import PREFIX, by_email_id
 from tools._server import MCPServer, ToolError
 
 server = MCPServer("mail")
-GOLDEN = "golden:"
 
 
 def _api(path: str) -> dict:
@@ -34,8 +34,8 @@ def list_new() -> list[dict]:
 @server.tool()
 def read(email_id: str) -> dict:
     """One email: id, from, from_name, to, subject, text, attachments [{name, text}]."""
-    if email_id.startswith(GOLDEN):
-        g = next((e for e in golden() if e["id"] == email_id[len(GOLDEN):]), None)
+    if email_id.startswith(PREFIX):
+        g = by_email_id(email_id)
         if g is None:
             raise ToolError(f"no email {email_id!r}")
         return {**mail.as_email(g), "id": email_id}

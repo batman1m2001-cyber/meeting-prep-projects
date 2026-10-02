@@ -13,7 +13,7 @@ TASKS = ("send_brief",)
 
 def _link(approval_id: int, decision: str) -> str:
     base = os.environ.get("BRD_PUBLIC_URL", "http://127.0.0.1:8400").rstrip("/")
-    return f"{base}/approve?id={approval_id}&decision={decision}"
+    return f"{base}/approve?approval={approval_id}&decision={decision}"
 
 
 @server.tool()

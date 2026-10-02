@@ -7,6 +7,7 @@ import urllib.request
 import pytest
 from prep_world import MAIL_API, golden, world
 
+from tools._golden import email_id
 from tools._server import ToolError
 from tools import approval, calendar, crm, kb, mail, memory, report, web
 
@@ -75,7 +76,7 @@ def test_report_renders_the_six_sections_and_an_email_body():
 def test_approval_request_is_pending_with_its_links():
     r = report.render_markdown("lotus", "Lotus", "a", "b", "c", "d", "e", "f")
     a = approval.request("send_brief", r["report_id"], "brief for Lotus")
-    assert a["status"] == "pending" and a["approve_url"].endswith(f"id={a['approval_id']}&decision=approve")
+    assert a["status"] == "pending" and a["approve_url"].endswith(f"approval={a['approval_id']}&decision=approve")
     assert approval.status(a["approval_id"])["status"] == "pending"
     with pytest.raises(ToolError):
         approval.request("wire_money", r["report_id"], "no")
@@ -102,8 +103,8 @@ def test_web_fetch_drops_the_hidden_instruction():
 
 # ── mail ──
 def test_mail_reads_a_golden_email_without_a_mail_server():
-    e = mail.read("golden:lotus-intro")
-    assert e["id"] == "golden:lotus-intro" and e["from"] == "linh.tran@lotus-logistics.example"
+    e = mail.read(email_id("lotus-intro"))
+    assert e["id"] == email_id("lotus-intro") and e["from"] == "linh.tran@lotus-logistics.example"
     with pytest.raises(ToolError):
         mail.read("golden:nope")
 
