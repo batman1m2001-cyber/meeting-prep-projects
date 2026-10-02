@@ -1,0 +1,26 @@
+# Least privilege: the tools each identity may call, and how often.
+# The harness checks every call against this file (steps 2–4); the model
+# is shown only its own tools. Special rules (mail__send, leak checks) are
+# in `_scopes.py`.
+per_minute: 120                   # per identity and tool, unless set below
+timeout_s: 30                     # step 6: one tool call
+
+identities:
+  email_agent:
+    tools: [mail__list_new, mail__read, mail__send, mail__status, crm__find_company]
+  extract_company:
+    tools: [crm__find_company]
+  web_research_agent:
+    tools: [web__search, web__fetch, web__news]
+  calendar_agent:
+    tools: [calendar__meetings, calendar__upcoming]
+  company_info_agent:
+    tools: [crm__find_company, crm__contacts, crm__history, kb__search]
+  memory_agent:
+    tools: [memory__recall, memory__remember, memory__history, memory__user_profile]
+  report_agent:
+    tools: [report__render_markdown, report__email_body]
+  human_approval_agent:
+    tools: [approval__request, approval__status]
+  deliver:                        # Send Brief / Save to KB (a step, not an agent)
+    tools: [kb__save, memory__remember]

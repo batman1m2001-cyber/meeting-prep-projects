@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "operonx[openai]>=1.12.1",
     "meeting-prep-world",
+    "jsonschema>=4",
 ]
 
 [dependency-groups]

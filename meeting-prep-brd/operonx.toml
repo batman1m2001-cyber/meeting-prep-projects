@@ -1,0 +1,7 @@
+[project]
+name = "meeting-prep-brd"
+src  = ["src", "."]
+app  = "app.main:APP"
+
+[resources]
+overlay = "resources.yaml"
