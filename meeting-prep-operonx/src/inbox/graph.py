@@ -26,7 +26,7 @@ def new_customer_email(item):
 def on_mail():
     src = ingress()
     inbox = new_customer_email(item=src["item"])
-    prepare = prepare_graph.prepare(email=inbox["email"], deliver=True)
+    prepare = prepare_graph.prepare(mail=inbox["email"], deliver=True)
     START >> src >> inbox >> if_(inbox["ours"] == True, END).else_(prepare)  # noqa: E712
     prepare >> END
 
@@ -37,5 +37,5 @@ def sweep():
     ids = ops.unread()
     one = ops.each(ids=ids["ids"])
     got = ops.fetch(item=one["item"])
-    prepare = prepare_graph.prepare(email=got["email"], deliver=True)
+    prepare = prepare_graph.prepare(mail=got["email"], deliver=True)
     START >> src >> ids >> one >> got >> prepare >> END

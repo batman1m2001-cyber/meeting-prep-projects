@@ -1,4 +1,4 @@
-"""prepare(email): from one email to a brief waiting for approval.
+"""prepare(mail): from one email to a brief waiting for approval.
 
 Drawn as the course brief draws it: one zone (a nested `@graph`) per box.
 
@@ -157,23 +157,21 @@ def human_approval_gate(email, deliver, company=None, brief=None, ok=None, probl
 
 # ── prepare: the brief's diagram, top to bottom ───────────────────────────
 @graph
-def prepare(email, deliver):
-    """The input `email` is read by every zone that needs it before the Email Agent zone
-    takes the name `email` (a node is named by its variable) — so that zone comes last."""
-    extract_company = extract_company_name(email=email)
+def prepare(mail, deliver):
+    email = email_agent(email=mail)
+    extract_company = extract_company_name(email=mail)
     web_research = web_research_agent(company=extract_company["company"])
     calendar = calendar_agent(company_id=extract_company["company_id"])
     company_info = company_info_agent(company=extract_company["company"], company_id=extract_company["company_id"])
     memory = memory_agent(
-        email=email, company=extract_company["company"], contacts=company_info["contacts"],
+        email=mail, company=extract_company["company"], contacts=company_info["contacts"],
         history=company_info["history"], meetings=calendar["meetings"], notes=company_info["memory"],
         website=web_research["website"], news=web_research["news"], people=web_research["people"],
     )
     report = report_agent(company=extract_company["company"], company_name=extract_company["name"],
                           evidence=memory["text"])
-    human_approval = human_approval_gate(email=email, deliver=deliver, company=extract_company["company"],
+    human_approval = human_approval_gate(email=mail, deliver=deliver, company=extract_company["company"],
                                          brief=report["brief"], ok=report["ok"], problems=report["problems"])
-    email = email_agent(email=email)
     done = ops.settle(a=email["outcome"], b=human_approval["outcome"])
 
     START >> email >> if_(email["lead"] == True, extract_company).else_(done)  # noqa: E712

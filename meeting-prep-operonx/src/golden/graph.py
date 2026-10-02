@@ -11,7 +11,7 @@ from prepare.graph import prepare
 def golden_case():
     src = ingress()
     c = ops.case(item=src["item"])
-    p = prepare(email=c["email"], deliver=False)
+    p = prepare(mail=c["email"], deliver=False)
     out = egress(item=p["outcome"])
     START >> src >> c >> p >> out >> END
 
