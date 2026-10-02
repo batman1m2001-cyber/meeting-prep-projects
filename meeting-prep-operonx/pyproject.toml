@@ -14,3 +14,8 @@ index-url = "https://pypi.org/simple"
 
 [tool.uv.sources]
 meeting-prep-world = { path = "../meeting-prep-world", editable = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
