@@ -1,0 +1,13 @@
+# Every agent's model: gpt-4o-mini through the seminar router (REBUILD_PLAN §10, Q3).
+# `openai:` asks the router for that OpenAI model by name, tools or not.
+llm:agent:
+  api_type: openai
+  api_key: ${OPENAI_API_KEY}
+  base_url: ${OPENAI_BASE_URL:http://127.0.0.1:8000/llm/v1}
+  model: ${BRD_MODEL:openai:gpt-4o-mini}
+  cost_per_input_token: 0.00000015     # gpt-4o-mini list price, $0.15 / 1M
+  cost_per_output_token: 0.0000006     # $0.60 / 1M
+
+# Every run recorded under .operonx/runs — what Studio draws and lights up.
+trace_local:
+  default: {}
