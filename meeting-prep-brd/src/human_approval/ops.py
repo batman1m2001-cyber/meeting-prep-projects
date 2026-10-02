@@ -30,7 +30,7 @@ def review_call(report: dict, approval: dict) -> dict:
             f"Approve (send it to sales and save it to the knowledge base):\n{approval['approve_url']}\n\n"
             f"Reject:\n{approval['reject_url']}\n\n---\n\n{report['email_body']}")
     return {"call": _call(f"review-{approval['approval_id']}", "mail__send",
-                          {"to": world()["us"]["sales"], "subject": f"[Approve?] Brief: {report['title']}",
+                          {"to": world()["us"]["sales"], "subject": f"[Approve #{approval['approval_id']}] Brief: {report['title']}",
                            "body": body, "approval_id": approval["approval_id"]})}
 
 

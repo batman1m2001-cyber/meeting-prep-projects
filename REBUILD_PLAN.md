@@ -11,7 +11,7 @@
 | # | brief | requirement |
 |---|---|---|
 | R1 | p.1 | Every morning AI checks new email. For a new customer or partner, it researches the company (website, Google news), checks the calendar for upcoming meetings with it, and writes a short report: introduction, field, products, recent news, contacts, points to note. The user reviews and approves it before it is forwarded by email or saved to the knowledge system. |
-| R2 | p.2 | **Multi-agent**: Email, Web Research, Company Info, Calendar, Report Generation, Memory, Human Approval. |
+| R2 | p.2 | **Multi-agent**: Email, Web Research, Company Info, Calendar, Report Generation, Memory, Human Approval (p.2 lists it as an agent; the diagram draws it as a person's step — §11). |
 | R3 | p.3 | Each agent's role (§3 quotes them). |
 | R4 | p.4 | **Tool harness**: the full 6 steps. |
 | R5 | p.5 | **Agent evaluation**: the 6 sample customer emails → expected results. |
@@ -54,7 +54,7 @@ Each agent = system prompt + its tools + a loop (model → tool calls → result
 | **Company Info Agent** | Gets info from the DB (diagram: internal DB, CRM, knowledge base). | `crm.find_company`, `crm.contacts`, `crm.history`, `kb.search` | company → `{profile, contacts[], history[], kb_notes[]}` |
 | **Memory Agent** | Stores and manages context, research history, past results and user information for reuse in later runs (diagram: merge, deduplicate, maintain context). | `memory.recall(company/user)`, `memory.remember(item)`, `memory.history(company)`, `memory.user_profile()` | the 3 results + past memory → `{context: merged, de-duplicated facts with sources, what's new since last time}`; writes the research history |
 | **Report Generation Agent** | Combines the other agents' results and produces a report in several formats (PDF, Word, Markdown, Email). | `report.render_markdown`, `report.export_pdf`, `report.export_docx`, `report.email_body` | context → `{markdown, pdf_path, docx_path, email_body}` with the sections from p.1: intro, field, products, recent news, contacts, points to note |
-| **Human Approval Agent** | Puts important tasks (sending email, creating the official report, sending notifications) into a user-approval step before execution. | `approval.request(task, payload)`, `approval.status(id)` | a proposed action → `{approval_id, status: pending/approved/rejected}`; nothing is executed before "approved" |
+| **Human Approval** *(a person, not an agent — see §11)* | The diagram: *"Human Approval — Review and approve the briefing"*. Important tasks (sending the brief) wait for a person before they run. | `approval.request(task, report_id, summary)`, `mail.send` (to sales, about a pending approval only) | the brief → a pending approval in `brd.approvals`; sales is emailed the brief with Approve / Reject links; the run ends. Only the click continues. |
 | **Send Brief / Save to KB** *(final box)* | Email, Slack or knowledge base. | Email Agent (`mail.send`) + Memory Agent / `kb.save` | on approval → the brief goes to sales and is saved to the KB and memory |
 
 ## 4. Data and knowledge stores (Postgres 17 + pgvector, plus Mailpit)
@@ -108,8 +108,8 @@ prepare_brief
 │  ├ calendar_agent       ⟲ agent                            → meetings
 │  └ company_info_agent   ⟲ agent                            → company info
 ├─ memory_agent           ⟲ agent                            → merged context (+ writes history)
-├─ report_agent           ⟲ agent                            → report (md, pdf, docx, email)
-└─ human_approval_agent   ⟲ agent                            → approval pending
+├─ report_agent           ⟲ agent                            → report (md, email)
+└─ human_approval         a person (no model): approval saved, sales emailed the links → the run ends
 deliver (on the approval link)
 └─ send_brief_or_save_to_kb: email_agent(send) · memory_agent/kb.save
 ```
@@ -180,3 +180,9 @@ The brief's version is a **new project beside the optimized one**. The talk comp
 - **Q5 / Q6:** Markdown + Email; no Slack.
 - **Q7:** the gate is 90%.
 - **Service port:** `:8400`. Mailpit's webhook stays on the optimized build. The brief's version is triggered by a job or by its own endpoint.
+
+## 11. Decisions (2026-10-02, night, during the build)
+
+- **Human Approval is a person, not an agent.** The user: follow the diagram, where the box reads *"Human Approval — Review and approve the briefing"*, with no "Agent". So no LLM and no loop in that zone: the brief is saved as a pending approval (`brd.approvals`), sales gets an email with the brief and Approve / Reject links to this project's service (:8400), and only the person's click continues to *Send Brief / Save to KB*. The Email Agent's send is still refused by the harness without an approved `approval_id`. The build is therefore **6 LLM agents** (Email, Web Research, Calendar, Company Info, Memory, Report) + Extract Company Name (a plain step) + Human Approval (a person) + Send Brief / Save to KB.
+- **The Email Agent's lead flag is two fields.** §3's `is_new_customer_or_partner` became `is_customer_or_partner` (decides brief / skip) and `is_new_customer` (the CRM does not know the company). gpt-4o-mini read "new" as "a company we don't know" and skipped follow-ups from known customers, which the golden set (and p.1's "customer or partner") expect a brief for.
+- **The tool-agent op is not a separate `ToolAgent` op** (§6, Q2): each agent's `graph.py` writes its loop out as a module-level `@graph`, from shared module-level ops (the loop's steps and the harness, `src/agents/_shared/`). OperonX's conventions forbid building graphs in a factory, so the loop is wiring each agent shows, not a constructor.

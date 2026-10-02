@@ -12,6 +12,6 @@ from .ops import case
 def golden_case():
     src = ingress()
     email = case(item=src["item"])
-    prepare = prepare_brief(email_id=email["email_id"], notify=False)
+    prepare = prepare_brief(email_id=email["email_id"], notify=email["notify"])
     out = egress(item=prepare["outcome"])
     START >> src >> email >> prepare >> out >> END

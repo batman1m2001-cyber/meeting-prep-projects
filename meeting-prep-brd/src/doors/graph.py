@@ -13,7 +13,7 @@ def on_email():
     """POST /prepare {"email_id"} → the brief waiting for approval; sales gets the approve/reject links by email."""
     src = ingress()
     asked = email_request(item=src["item"])
-    prepare = prepare_brief(email_id=asked["email_id"], notify=True)
+    prepare = prepare_brief(email_id=asked["email_id"], notify=asked["notify"])
     out = egress(item=prepare["outcome"])
     START >> src >> asked >> prepare >> out >> END
 
