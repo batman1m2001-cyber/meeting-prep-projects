@@ -88,8 +88,8 @@ def _on_mail(item):
     from inbox.graph import on_mail
 
     with tempfile.TemporaryDirectory() as records:
-        run = Job("on_mail_test", graph=on_mail, source=[item], sink=[], record_dir=records).run_sync()
-    assert run.status == "ok", run.status
+        run = Job("on_mail_test", graph=on_mail, items=[item], record_dir=records).run_sync()
+    assert run.status == "ok", [(i.key, i.error) for i in run.failed]
 
 
 def test_inbox():
