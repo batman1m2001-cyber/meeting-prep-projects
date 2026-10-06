@@ -5,8 +5,8 @@ Drawn as the course brief draws it: one zone (a nested `@graph`) per box.
     email ─ attack ─► blocked                       Email Agent
       └ not a lead ─► skip
       └► extract_company (CRM over MCP)              Extract Company Name
-          ├► web_research ─┐  website · news · people: three ReAct agents in
-          ├► calendar ─────┤  parallel, each starting from company memory;
+          ├► web_research ─┐  website · news · people: one research agent run three
+          ├► calendar ─────┤  times in parallel, each starting from company memory;
           └► company_info ─┘  identical tool calls hit the network once per run
                 └► memory (merge · dedupe) ► report (LLM · check)
                      └► human_approval ─ ok ─► request_approval   (the run ends;
@@ -15,46 +15,26 @@ Drawn as the course brief draws it: one zone (a nested `@graph`) per box.
 Every zone hands plain values on; none collects a stream.
 """
 from operonx import END, PARENT, START, graph
-from operonx.agents import build_react_agent, get_tool_definitions
-from operonx.agents.ops.model_ops import adapt_llm_output, turn_tool_choice
-from operonx.agents.policy import ToolPolicy
+from operonx.agents import Agent, AgentOp, Model, ToolPolicy, UsageLimits
 from operonx.core.ops import if_
 from operonx.providers.ops import LLMOp
 
-from prepare import ops, tools
-from prepare._prompts import BRIEF, RESEARCH, TRIAGE
-from prepare.memory import CompanyMemory
-
-RESEARCH_DEFS = get_tool_definitions(tools.RESEARCH_TOOLS)
+from prepare import memory, ops, tools
+from prepare._prompts import BRIEF, TRIAGE
 
 # Unattended: the agents may read (both tools are read-only); anything else is refused, never asked.
 READ_ONLY = ToolPolicy(default="deny", readonly="allow", destructive="deny")
 
-
 # ── the research agent ────────────────────────────────────────────────────
-@graph
-def model(messages=None, last_turn=False):
-    """The research agent's model call: `make_llm_caller("assistant", tools=…)`, with the
-    company memory seated first."""
-    seated = ops.place_memory(messages=messages)
-    choice = turn_tool_choice(last_turn=last_turn)
-    llm = LLMOp.of(resource="assistant", messages=seated["messages"], tools=RESEARCH_DEFS,
-                   tool_choice=choice["tool_choice"])
-    adapted = adapt_llm_output(content=llm["content"], tool_calls=llm["tool_calls"],
-                               finish_reason=llm["finish_reason"])
-    for key in ("assistant_message", "tool_calls", "done", "finish_reason", "truncated"):
-        adapted[key] >> PARENT[key]
-    START >> seated >> choice >> llm >> adapted >> END
-
-
-model.tools = RESEARCH_DEFS  # counted against the agent's token budget
-
-# One ReAct agent, built once by OperonX; `web_research` runs it three times.
-researcher = build_react_agent(
-    call_model=model,
-    system=RESEARCH,
-    max_turns=4,
-    memory_providers=[CompanyMemory()],
+# One agent, defined once; `web_research_agent` runs it three times. Its company memory
+# comes in as `deps` and sits in its system prompt (`memory.instructions`); its fourth
+# model call is told to answer and cannot call tools.
+researcher = Agent(
+    name="researcher",
+    model=Model("assistant"),
+    instructions=memory.instructions,
+    tools=tools.RESEARCH_TOOLS,
+    limits=UsageLimits(turns=4),
     policy=READ_ONLY,
 )
 
@@ -92,15 +72,15 @@ def extract_company_name(email):
 
 @graph
 def web_research_agent(company=None):
-    """Web Research Agent: three ReAct agents (website, news, people) at once."""
+    """Web Research Agent: the research agent on three tasks (website, news, people) at once."""
     tasks = ops.research_tasks(company=company)
     company_memory = ops.company_memory(website=tasks["website"], news=tasks["news"], people=tasks["people"])
-    website = researcher(messages=tasks["website"])
-    news = researcher(messages=tasks["news"])
-    people = researcher(messages=tasks["people"])
-    website["final"] >> PARENT["website"]
-    news["final"] >> PARENT["news"]
-    people["final"] >> PARENT["people"]
+    website = AgentOp.of(agent=researcher, input=tasks["website"], deps=company_memory["website"])
+    news = AgentOp.of(agent=researcher, input=tasks["news"], deps=company_memory["news"])
+    people = AgentOp.of(agent=researcher, input=tasks["people"], deps=company_memory["people"])
+    website["output"] >> PARENT["website"]
+    news["output"] >> PARENT["news"]
+    people["output"] >> PARENT["people"]
     START >> tasks >> company_memory >> [website, news, people] >> END
 
 

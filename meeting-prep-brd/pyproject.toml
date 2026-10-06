@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "The meeting-prep assistant as the course brief designs it: seven agents, each an LLM with its own MCP tools"
 requires-python = ">=3.12"
 dependencies = [
-    "operonx[openai]>=1.12.1",
+    "operonx[openai]>=1.16.0",
+    "operonx-agents[mcp]>=0.1.1",  # MCPClient/MCPServer (operonx.agents.tools.mcp)
     "meeting-prep-world",
     "jsonschema>=4",
 ]

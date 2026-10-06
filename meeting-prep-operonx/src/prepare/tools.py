@@ -21,9 +21,6 @@ from prep_world.guard import visible_text
 
 from prepare import _run_memo
 
-RESEARCH_TOOLS = ["web_search", "fetch_page"]
-
-
 def _get(url: str) -> str:
     with urllib.request.urlopen(url, timeout=10) as r:
         return r.read().decode("utf-8", "replace")
@@ -34,14 +31,13 @@ def _same(text: str) -> str:
     return " ".join(str(text).split()).casefold()
 
 
-@tool(
-    name="web_search",
-    description="Search the web. Returns titles, links and snippets.",
-    schema={"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
-    readonly=True,
-    bound="io",
-)
+@tool(readonly=True)
 async def web_search(query: str) -> dict:
+    """Search the web. Returns titles, links and snippets.
+
+    Args:
+        query: What to search for.
+    """
     url = f"{WEB}/search?" + urllib.parse.urlencode({"q": query, "n": 5})
 
     async def search() -> dict:
@@ -50,15 +46,17 @@ async def web_search(query: str) -> dict:
     return await _run_memo.call(("web_search", _same(query)), search)
 
 
-@tool(
-    name="fetch_page",
-    description="Read a web page: its visible text.",
-    schema={"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]},
-    readonly=True,
-    bound="io",
-)
+@tool(readonly=True)
 async def fetch_page(url: str) -> dict:
+    """Read a web page: its visible text.
+
+    Args:
+        url: The page's address.
+    """
     async def fetch() -> dict:
         return {"text": visible_text(await asyncio.to_thread(_get, url))[:4000]}
 
     return await _run_memo.call(("fetch_page", url.strip().rstrip("/")), fetch)
+
+
+RESEARCH_TOOLS = [web_search, fetch_page]

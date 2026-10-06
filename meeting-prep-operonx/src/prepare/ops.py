@@ -4,25 +4,16 @@ from __future__ import annotations
 
 import asyncio
 import os
-import re
 from email.utils import parseaddr
 
 from operonx import op
 from prep_world import db, mail, world
 from prep_world.guard import leaks, looks_like_attack, visible_text
 
-from prepare import _mcp
-from prepare.memory import CompanyMemory
+from prepare import _mcp, memory
 
 # where the approval email links: the app itself, or a public address that forwards to it
 APPROVE_URL = os.environ.get("PREP_APPROVE_URL", "http://127.0.0.1:8200/approve")
-
-HEADING = ("Known from past meetings and approved briefs with this company. Do not research these "
-           "again; verify or update them, and report what is new or changed:")
-
-# How OperonX renders recalled memory (`render_memory_block`; `gather_memory` labels it "memory").
-_BLOCK = re.compile(r"^<(memory|company_memory)>\n(.*)\n</\1>$", re.S)
-
 
 def _domain(address: str) -> str:
     return parseaddr(address)[1].rpartition("@")[2].lower()
@@ -86,61 +77,33 @@ def recall(company: dict = None) -> dict:
 def research_tasks(company: dict = None) -> dict:
     name = (company or {}).get("name", "the company")
 
-    def ask(focus: str) -> list:
-        return [{"role": "user", "content": f"Research {name} for a sales meeting: {focus}. "
-                                            f"Search the web and read what you find. Find out about {name} {focus}."}]
+    def ask(focus: str) -> str:
+        return (f"Research {name} for a sales meeting: {focus}. "
+                f"Search the web and read what you find. Find out about {name} {focus}.")
 
     return {"website": ask("what it does and sells"), "news": ask("news"), "people": ask("team")}
 
 
-# ── the research agents' memory (`CompanyMemory`, in memory.py) ─────────────
-@op
-def place_memory(messages: list = None) -> dict:
-    """Seat the recalled memory right after the system prompt.
-
-    OperonX appends the memory block after the conversation (built for per-query
-    memory). Ours is the same every turn of a run — one company, one task — so it
-    belongs in the stable prefix: the model reads it as background, not as the newest
-    user turn, and the prefix stays cacheable."""
-    msgs = [dict(m) for m in messages or [] if isinstance(m, dict)]
-    block = next((m for m in reversed(msgs) if m.get("role") == "user" and _BLOCK.match(str(m.get("content") or ""))),
-                 None)
-    if block is None:
-        return {"messages": msgs}
-    rest = [m for m in msgs if m is not block]
-    body = _BLOCK.match(block["content"]).group(2).strip()
-    seat = 0
-    while seat < len(rest) and rest[seat].get("role") == "system":
-        seat += 1
-    return {"messages": rest[:seat] + [{"role": "system", "content": f"{HEADING}\n{body}"}] + rest[seat:]}
-
-
 @op(bound="io")
-async def company_memory(website: list = None, news: list = None, people: list = None) -> dict:
-    """What the agents will start from, looked up before they start: the same recall each
-    agent's `context → recalled` step makes (same provider, same query, same limit), so
-    the agents' first turn finds it in the run memo and the network is asked once. It
-    changes nothing an agent sees; it makes the agents' memory a step on the canvas."""
-    provider = CompanyMemory()
-
-    async def known(task: list = None) -> list:
-        asked = next((m["content"] for m in reversed(task or []) if m.get("role") == "user"), "")
-        return [e.text for e in await provider.prefetch(asked, 5)]  # 5: gather_memory's default limit
-
-    website_, news_, people_ = await asyncio.gather(known(website), known(news), known(people))
+async def company_memory(website: str = None, news: str = None, people: str = None) -> dict:
+    """What each research agent starts from: its task's company memory, recalled before
+    the agents start and handed to each as its `deps` (`memory.instructions` seats it in
+    the system prompt). A step of its own, so the agents' memory is on the canvas."""
+    website_, news_, people_ = await asyncio.gather(memory.known(website), memory.known(news),
+                                                    memory.known(people))
     return {"website": website_, "news": news_, "people": people_}
 
 
 # ── the brief ──────────────────────────────────────────────────────────────
-def _answer(final: dict = None) -> str:
-    return (final or {}).get("content") or "(no answer)"
+def _answer(output: str = None) -> str:
+    return output or "(no answer)"
 
 
 # ── the memory agent's merge: every source into one evidence pack ───────────
 @op
 def evidence(email: dict, company: dict = None, contacts: list = None, history: list = None,
-             meetings: list = None, memory: list = None, website: dict = None, news: dict = None,
-             people: dict = None) -> dict:
+             meetings: list = None, memory: list = None, website: str = None, news: str = None,
+             people: str = None) -> dict:
     c = company or {}
     lines = [f"Profile: {c.get('name')} — {c.get('industry')}, {c.get('hq')}, {c.get('size')}. {c.get('about', '')}",
              f"Email from {email.get('from_name') or email['from']}: {email.get('subject', '')} — "
