@@ -521,6 +521,7 @@ dependencies = [
     { name = "jsonschema" },
     { name = "meeting-prep-world" },
     { name = "operonx", extra = ["openai"] },
+    { name = "operonx-agents", extra = ["mcp"] },
 ]
 
 [package.dev-dependencies]
@@ -532,7 +533,8 @@ dev = [
 requires-dist = [
     { name = "jsonschema", specifier = ">=4" },
     { name = "meeting-prep-world", editable = "../meeting-prep-world" },
-    { name = "operonx", extras = ["openai"], specifier = ">=1.12.1" },
+    { name = "operonx", extras = ["openai"], specifier = ">=1.16.0" },
+    { name = "operonx-agents", extras = ["mcp"], specifier = ">=0.1.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -592,7 +594,7 @@ wheels = [
 
 [[package]]
 name = "operonx"
-version = "1.12.1"
+version = "1.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "orjson" },
@@ -600,15 +602,39 @@ dependencies = [
     { name = "pyyaml" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/03/d7/364a67ff739b9d4e1dc9886a645ffe0ebb62d5b25be1fef2358b2bd317e2/operonx-1.12.1.tar.gz", hash = "sha256:4d670bc417a72ae8289a66843f43deab67ab7ad8c1ab7f9c15826c024092931c", size = 509052, upload-time = "2026-10-02T07:35:25.257Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/a0/ea3367734f5e50b314353322149ad712fe413e9e6755aab8021146f34b93/operonx-1.16.0.tar.gz", hash = "sha256:c6f5f21ef3213514c981985ee4b03623a84ba8419e4af939cdb566c8aef1bb43", size = 740519, upload-time = "2026-10-06T03:06:36.37Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/68/084aa8caf26e4a073f4720fbc16268b33ab972997e716349bac2282801e6/operonx-1.12.1-py3-none-any.whl", hash = "sha256:f69df5da7eb7ed1298fbfdbfebc8a680fca7a0387189cb23352f15292b36e0dd", size = 645377, upload-time = "2026-10-02T07:35:23.163Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/5c/a74a822e0c058a7e2ae6438d156188bb3afe3b930b812a4248b36e97ac1b/operonx-1.16.0-py3-none-any.whl", hash = "sha256:469ea064fb0433df0a32efdc71d8c17d4cad02cb880d9e6bf9f5c4270ba5780c", size = 915491, upload-time = "2026-10-06T03:06:34.634Z" },
 ]
 
 [package.optional-dependencies]
+anthropic = [
+    { name = "httpx" },
+    { name = "openai" },
+]
 openai = [
     { name = "httpx" },
     { name = "openai" },
+]
+
+[[package]]
+name = "operonx-agents"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "operonx", extra = ["anthropic", "openai"] },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3b/72/dd1c8e0ec92b826d4f72b528a2d8fae5c65e98d0baa5096b63fb2a6a57f6/operonx_agents-0.1.1.tar.gz", hash = "sha256:70f910111f02eeeff77767261241778c6d8255b31ef504ba797b9114e6eba72d", size = 123508, upload-time = "2026-10-06T04:22:26.584Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cd/b1/50373715e36aadc50819c0868ef1b918e7df3a65868c77f9e77000de860c/operonx_agents-0.1.1-py3-none-any.whl", hash = "sha256:09346fe9d57b4b2fc6e4b592fcac51e85a1f9806da19a5a2fcb1d23d626daf64", size = 132826, upload-time = "2026-10-06T04:22:25.263Z" },
+]
+
+[package.optional-dependencies]
+mcp = [
+    { name = "mcp" },
 ]
 
 [[package]]
@@ -886,6 +912,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e4/47/b9efed96c114afcfa3c9d3fe98a76a1d14c74a9e266d397cf6eb64be5e01/pytest-9.1.1.tar.gz", hash = "sha256:1088fbde8f2b49d95a549a195707afa7a76a3ce9bcadc26b6d71f0ffda5fe313", size = 1636369, upload-time = "2026-06-19T10:58:32.857Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/24/25/1de2678b631f5a49215c6c96fff41ba892b0a34df68d6d80292b1b48aa7f/pytest-9.1.1-py3-none-any.whl", hash = "sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c", size = 386536, upload-time = "2026-06-19T10:58:31.347Z" },
+]
+
+[[package]]
+name = "python-dotenv"
+version = "1.2.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/74/26/2fbeedb218a787a5eea551c7532cac4e009f83d689dd2faa0d0353473f86/python_dotenv-1.2.4.tar.gz", hash = "sha256:f0d53e69935a851c0dcc78f3ab7aaccd8cabef0b92382b576b824212902873c0", size = 60824, upload-time = "2026-10-01T05:36:10Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/60/d1/38f3a3405989a89ac18390803e70c6ad7c7760da4f9b83cbeca0c44a0c72/python_dotenv-1.2.4-py3-none-any.whl", hash = "sha256:42269a8a5b3fd54ffa6f3d84b18abed50064717576b4ecf03dc4a55d8aa04fdc", size = 23266, upload-time = "2026-10-01T05:36:08.633Z" },
 ]
 
 [[package]]

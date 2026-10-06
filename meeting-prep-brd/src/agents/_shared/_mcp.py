@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from operonx.agents.mcp import MCPClient, MCPServer
+from operonx.agents.tools.mcp import MCPClient, MCPServer
 
 SERVERS = ("mail", "crm", "calendar", "kb", "memory", "report", "approval", "web")
 SRC = Path(__file__).resolve().parents[2]

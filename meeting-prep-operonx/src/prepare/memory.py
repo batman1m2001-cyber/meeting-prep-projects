@@ -1,13 +1,14 @@
-"""What the research agents already know: company memory, OperonX's agent memory.
+"""What the research agents already know: company memory.
 
 Two kinds of memory in this flow, on purpose:
 
     ops.recall        code picks — the workflow fetches the company's notes once and
                       hands them to the brief.
-    CompanyMemory     the agent's own — an OperonX `MemoryProvider`, consulted by every
-                      research agent each turn (context zone → `recalled`), so it starts
-                      from what past meetings and approved briefs already say and
-                      verifies/updates them instead of researching them again.
+    company memory    the agents' own — `ops.company_memory` recalls, per research task,
+                      what past meetings and approved briefs already say; each agent gets
+                      it as its `deps`, and `instructions` seats it in the system prompt,
+                      so the agent starts from it and verifies/updates it instead of
+                      researching it again.
 
 Both read the same knowledge base (`prep_world.db.recall`, pgvector `kb_chunks`, scoped
 to one company). Approved briefs are written back by the approve flow (`db.remember`),
@@ -18,46 +19,43 @@ from __future__ import annotations
 import asyncio
 import re
 
-from operonx.agents.memory import MemoryEntry, MemoryProvider
 from prep_world import db
 
 from prepare import _run_memo
+from prepare._prompts import RESEARCH
 
-LABEL = "company_memory"
 # `ops.research_tasks` words every task "Research <name> for a sales meeting: …".
 _TASK = re.compile(r"Research (.+?) for a sales meeting")
+K = 3
+
+HEADING = ("Known from past meetings and approved briefs with this company. Do not research these "
+           "again; verify or update them, and report what is new or changed:")
 
 
-class CompanyMemory(MemoryProvider):
-    """The knowledge base, scoped to the company the agent was asked about.
+async def known(task: str, k: int = K) -> list[str]:
+    """What the knowledge base says about the company a task is about.
 
-    A provider is built once with the graph, but a run is about one company: the
-    company is read from the agent's task (the query OperonX passes is the last user
-    turn) and looked up in the CRM, so an agent never sees another company's notes.
-    An unknown company recalls nothing. Within a run the same question is answered
-    once (the loop asks every turn)."""
+    The company is read from the task and looked up in the CRM, so an agent never sees
+    another company's notes; an unknown company recalls nothing. Within a run the same
+    task is answered once."""
+    m = _TASK.search(task or "")
+    if not m:
+        return []
 
-    bound = "io"
-    label = LABEL
-
-    def __init__(self, k: int = 3) -> None:
-        self.k = k
-
-    async def _prefetch(self, query: str, limit: int) -> list[MemoryEntry]:
-        m = _TASK.search(query)
-        if not m:
+    async def look() -> list[str]:
+        company = await asyncio.to_thread(db.find_company, m.group(1))
+        if not company:
             return []
+        return [r["content"] for r in await asyncio.to_thread(db.recall, task, k, company["id"])]
 
-        async def look() -> list[MemoryEntry]:
-            company = await asyncio.to_thread(db.find_company, m.group(1))
-            if not company:
-                return []
-            found = await asyncio.to_thread(db.recall, query, min(limit, self.k), company["id"])
-            return [MemoryEntry(r["content"], f"{company['id']}/{r['source']}", 1.0 - float(r["distance"]))
-                    for r in found]
+    return await _run_memo.call(("memory", task), look, counted=False)
 
-        return await _run_memo.call(("memory", query), look, counted=False)
 
-    async def _write(self, text: str, source: str) -> None:
-        # Writes need a company; the approve flow does them (`db.remember`).
-        raise NotImplementedError("company memory is written by the approve flow, per approved brief")
+def instructions(ctx) -> str:
+    """The research agent's system prompt, then its task's company memory (its `deps`).
+    The same every turn of a run — one company, one task — so it sits in the stable
+    prefix: the model reads it as background, and the prefix stays cacheable."""
+    notes = ctx.deps or []
+    if not notes:
+        return RESEARCH
+    return RESEARCH + "\n\n" + HEADING + "\n" + "\n".join(f"- {n}" for n in notes)

@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "The meeting-prep assistant, built on OperonX"
 requires-python = ">=3.12"
 dependencies = [
-    "operonx[openai]>=1.12.1",
+    "operonx[openai]>=1.16.0",
+    "operonx-agents[mcp]>=0.1.2",  # the research agent, MCPClient (operonx.agents)
     "meeting-prep-world",
 ]
 

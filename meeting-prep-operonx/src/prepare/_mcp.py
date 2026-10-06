@@ -6,7 +6,7 @@ import os
 import sys
 from typing import Any
 
-from operonx.agents.mcp import MCPClient, MCPServer
+from operonx.agents.tools.mcp import MCPClient, MCPServer
 
 _client: MCPClient | None = None
 _lock: asyncio.Lock | None = None
