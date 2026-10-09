@@ -15,17 +15,33 @@ Drawn as the course brief draws it: one zone (a nested `@graph`) per box.
 Every zone hands plain values on; none collects a stream.
 """
 from operonx import END, PARENT, START, graph
-from operonx.agents import Agent, AgentOp, Model, ToolPolicy, UsageLimits
+from operonx.agents import Agent, AgentOp, Model, ToolPolicy, UsageLimits, tool
 from operonx.core.ops import if_
 from operonx.providers.ops import LLMOp
 
-from prepare import memory, ops, tools
+from prepare import memory, ops
 from prepare._prompts import BRIEF, TRIAGE
 
 # Unattended: the agents may read (both tools are read-only); anything else is refused, never asked.
 READ_ONLY = ToolPolicy(default="deny", readonly="allow", destructive="deny")
 
 # ── the research agent ────────────────────────────────────────────────────
+@graph
+def fetch_page(url: str):
+    """Read a web page: its visible text.
+
+    Args:
+        url: The page's address.
+    """
+    html = ops.fetch_html(url=url)
+    text = ops.page_text(html=html["html"])
+    START >> html >> text >> END
+
+
+# Its tools, each an op or a graph: a call runs as a step of the run, so the trace (and
+# Studio) shows what each did — fetch_page opens onto fetch → visible text.
+RESEARCH_TOOLS = [tool(ops.web_search, readonly=True), tool(fetch_page, readonly=True)]
+
 # One agent, defined once; `web_research_agent` runs it three times. Its company memory
 # comes in as `deps` and sits in its system prompt (`memory.instructions`); its fourth
 # model call is told to answer and cannot call tools.
@@ -33,7 +49,7 @@ researcher = Agent(
     name="researcher",
     model=Model("assistant"),
     instructions=memory.instructions,
-    tools=tools.RESEARCH_TOOLS,
+    tools=RESEARCH_TOOLS,
     limits=UsageLimits(turns=4),
     policy=READ_ONLY,
 )
