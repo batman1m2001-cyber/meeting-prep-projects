@@ -39,7 +39,7 @@ memo, so it is fetched once).
 | file | holds |
 |---|---|
 | `app/main.py` | the services (`mail` webhook, `approve` link, `morning` 08:00 sweep) and the `golden` eval |
-| `src/prepare/` | the flow: `graph.py` wiring, `ops.py` steps, `tools.py` the research tools, `_mcp.py` |
+| `src/prepare/` | the flow: `graph.py` wiring (and `fetch_page`, a graph the research agent calls as a tool), `ops.py` steps (and `web_search`, an op it calls), `_web.py`, `_mcp.py` |
 | `src/inbox/`, `src/approve/`, `src/golden/` | how runs start and end (`inbox`, `send_or_save` zones) |
 | `tests/test_zones.py` | the approve link and the inbox door, offline (mail and drafts faked) |
 | `tests/repo/test_graph_conventions.py` | the OperonX conventions (qc-snatcher's): every `@graph`/`@op` at module level, graphs in `graph.py` and ops in `ops.py`, no `name=`, every parameter used, wiring written once, every model reply checked |

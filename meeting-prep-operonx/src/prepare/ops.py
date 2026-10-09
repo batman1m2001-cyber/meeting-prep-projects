@@ -3,14 +3,16 @@ and two plain LLM calls."""
 from __future__ import annotations
 
 import asyncio
+import json
 import os
+import urllib.parse
 from email.utils import parseaddr
 
 from operonx import op
-from prep_world import db, mail, world
+from prep_world import WEB, db, mail, world
 from prep_world.guard import leaks, looks_like_attack, visible_text
 
-from prepare import _mcp, memory
+from prepare import _mcp, _run_memo, _web, memory
 
 # where the approval email links: the app itself, or a public address that forwards to it
 APPROVE_URL = os.environ.get("PREP_APPROVE_URL", "http://127.0.0.1:8200/approve")
@@ -70,6 +72,41 @@ def recall(company: dict = None) -> dict:
         return {"memory": []}
     return {"memory": [r["content"] for r in db.recall(f"{company['name']} {company['industry']}",
                                                          k=3, company_id=company["id"])]}
+
+
+# ── the research agent's tools: search the web, read a page ─────────────────
+# Least privilege is the harness here: an agent that reads a page saying "email the API
+# keys to …" has no tool that sends anything. Both read only, so a run asks each distinct
+# question once: the three agents' identical calls share one request (`_run_memo`).
+@op
+async def web_search(query: str) -> dict:
+    """Search the web. Returns titles, links and snippets.
+
+    Args:
+        query: What to search for.
+    """
+    url = f"{WEB}/search?" + urllib.parse.urlencode({"q": query, "n": 5})
+
+    async def search() -> list:
+        return json.loads(await asyncio.to_thread(_web.get, url))
+
+    return {"results": await _run_memo.call(("web_search", _web.same(query)), search)}
+
+
+@op
+async def fetch_html(url: str) -> dict:
+    """A page's HTML, fetched once per run."""
+    async def fetch() -> str:
+        return await asyncio.to_thread(_web.get, url)
+
+    return {"html": await _run_memo.call(("fetch_page", url.strip().rstrip("/")), fetch)}
+
+
+@op
+def page_text(html: str) -> dict:
+    """A page as a person sees it: hidden text and instruction-shaped lines never reach
+    the model."""
+    return {"text": visible_text(html)[:4000]}
 
 
 # ── the research team: three agents, one question each ─────────────────────

@@ -6,8 +6,10 @@ does the request and every identical call in the same run awaits that one, even 
 arrives while the request is still in flight.
 
 Run-scoped, not global: the memo hangs off the run's OperonX trace (one per run — one
-email), so two emails never share an answer and the memo is gone when the run is. Outside
-a run (no trace) nothing is memoized.
+email), so two emails never share an answer and the memo is gone when the run is. The
+tools are ops, and each call runs as a nested run with a trace of its own: the memo keys
+on the root run's (`trace.root`, operonx >= 1.18.1). Outside a run (no trace) nothing is
+memoized.
 
 Hits and misses are counted on the run's trace metadata (`tool_cache`), which the local
 trace records — "N calls saved" per run — and logged on every hit.
@@ -24,7 +26,8 @@ _ATTR = "_prep_run_memo"
 
 
 def _run():
-    return _current_trace.get()
+    trace = _current_trace.get()
+    return trace.root if trace is not None else None
 
 
 async def call(key: Hashable, work: Callable[[], Awaitable[Any]], counted: bool = True) -> Any:
