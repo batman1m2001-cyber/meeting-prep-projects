@@ -70,14 +70,14 @@ def test_send_or_save():
         first = db.save_draft("e1", "lotus", "Hello", "# Brief: Lotus\n- a fact")
         second = db.save_draft("e2", "lotus", "Hello again", "# Brief: Lotus 2")
 
-        r = client.get("/approve", params={"draft": first, "decision": "approve"}).json()
+        r = client.get("/approve", params={"draft": first, "decision": "approve"}).json()["reply"]
         assert r == {"draft": first, "status": "approved", "company": "lotus"}, r
         assert [(to, subj) for to, subj, _ in f.outbox] == [(sales, "Brief: Lotus Logistics")], f.outbox
         assert f.kb == [("lotus", f"brief:{first}", "# Brief: Lotus\n- a fact")], f.kb
 
-        again = client.get("/approve", params={"draft": first, "decision": "approve"}).json()
+        again = client.get("/approve", params={"draft": first, "decision": "approve"}).json()["reply"]
         assert again == {"draft": first, "status": "already decided, or no such draft"}, again
-        no = client.get("/approve", params={"draft": second, "decision": "reject"}).json()
+        no = client.get("/approve", params={"draft": second, "decision": "reject"}).json()["reply"]
         assert no == {"draft": second, "status": "rejected", "company": "lotus"}, no
         assert len(f.outbox) == 1 and len(f.kb) == 1, (f.outbox, f.kb)
     print("ok  send_or_save: approve sends + remembers once; reject and a second click do nothing")
@@ -88,7 +88,7 @@ def _on_mail(item):
     from inbox.graph import on_mail
 
     with tempfile.TemporaryDirectory() as records:
-        run = Job("on_mail_test", graph=on_mail, items=[item], record_dir=records).run_sync()
+        run = Job("on_mail_test", graph=on_mail, items=[item], input="item", record_dir=records).run_sync()
     assert run.status == "ok", [(i.key, i.error) for i in run.failed]
 
 

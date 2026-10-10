@@ -60,4 +60,4 @@ uv run operonx-serve           # :8200 — then: (cd ../meeting-prep-world && uv
 Or the whole stack at once from the seminar repo: `./stack.sh up`. If 5433 is taken, set
 `PREP_DB_PORT` (docker) and `PREP_DB_URL` (every process) to another port.
 
-Needs operonx 1.12 (webhook, schedule, `agent["final"]`, `MCPClient.call_value`).
+Needs operonx 1.19.1: the graphs have no door ops — each takes its caller's data as parameters (the webhook's whole body as `item`, `Service(input="item")`) and answers with its outputs.
