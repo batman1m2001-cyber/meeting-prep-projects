@@ -22,10 +22,19 @@ PORT = 8200
 APP = Application(
     "meeting-prep",
     services=[
-        Service("mail", webhook("/mail", port=PORT), graph=on_mail, max_inflight=20),
+        Service("mail", webhook("/mail", port=PORT), graph=on_mail, input="item", max_inflight=20),
         Service("approve", http("GET", "/approve", port=PORT), graph=approve),
         Service("morning", schedule(at="08:00", port=PORT), graph=sweep),
     ],
-    jobs=[Eval("golden", graph=golden_case, dataset="datasets/golden.jsonl", evaluators=[judged], threshold=0.9)],
+    jobs=[
+        Eval(
+            "golden",
+            graph=golden_case,
+            input="email",
+            dataset="datasets/golden.jsonl",
+            evaluators=[judged],
+            threshold=0.9,
+        )
+    ],
     trace=["trace_local:default"],
 )
