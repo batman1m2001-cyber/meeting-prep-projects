@@ -1,5 +1,5 @@
-"""The tool harness as graphs: one call through its six steps, and a turn's
-calls fanned out."""
+"""The tool harness as graphs: one call through its six steps (an agent's tool
+runs it: `tools.harness_tools`), and a step's calls fanned out."""
 from operonx import END, START, graph
 
 from .ops import as_data, audit, authenticate, authorize, each_call, execute, rate_limit, validate
@@ -22,7 +22,7 @@ def tool_call(agent, call):
 
 @graph
 def run_tools(agent, tool_calls):
-    """Every tool call of one model turn, at once, each through the harness."""
+    """Every tool call a step makes (Send Brief's saves), at once, each through the harness."""
     calls = each_call(tool_calls=tool_calls)
     call = tool_call(agent=agent, call=calls["call"].parallel(max=8))
     START >> calls >> call >> END

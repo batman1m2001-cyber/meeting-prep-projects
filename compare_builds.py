@@ -11,9 +11,12 @@ Everything below is counted from those files; nothing is estimated except cost.
     LLM calls     model calls per email: trace nodes of type "llm"
     tool calls    calls to a tool (MCP, web, knowledge base) per email:
                     brd — every `execute` step of the tool harness (node "ran")
-                    opt — every agent tool dispatch (node "run") plus its workflow steps that
-                          call a tool: identify (1), crm (2: contacts, history), meetings (1), kb (1)
-    tokens        prompt + completion tokens per email, from each model call's usage
+                    opt — every agent tool dispatch (a node of type "tool", AgentOp's) plus its
+                          workflow steps that call a tool: identify (1), crm (2: contacts,
+                          history), meetings (1), kb (1)
+    tokens        prompt + completion tokens per email, from each model call's usage (an
+                  LLMOp's `prompt_tokens`/`completion_tokens`, an AgentOp model call's
+                  `input_tokens`/`output_tokens`)
     latency       p50 / p95 of the per-email wall time the eval recorded
     cost          per 1,000 emails at gpt-4o-mini list prices ($0.15 / 1M input, $0.60 / 1M output),
                   for both builds alike (the optimized build's calls without tools are actually
@@ -28,7 +31,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 PRICE_IN, PRICE_OUT = 0.15 / 1e6, 0.60 / 1e6
-OPT_TOOL_STEPS = {"run": 1, "identify": 1, "crm": 2, "meetings": 1, "kb": 1}
+OPT_TOOL_STEPS = {"identify": 1, "crm": 2, "meetings": 1, "kb": 1}
 
 
 def latest(project: Path) -> Path:
@@ -46,7 +49,15 @@ def trace_nodes(project: Path, run_id: str, trace_id: str) -> list[dict]:
 def tool_calls(build: str, nodes: list[dict]) -> int:
     if build == "brd":
         return sum(n["op_name"] == "ran" for n in nodes)
-    return sum(OPT_TOOL_STEPS.get(n["op_name"], 0) for n in nodes if n["op_type"] == "code")
+    dispatched = sum(n["op_type"] == "tool" for n in nodes)
+    return dispatched + sum(OPT_TOOL_STEPS.get(n["op_name"], 0) for n in nodes if n["op_type"] == "code")
+
+
+def _action(output: dict | None) -> str | None:
+    """The case's action: at the top of the output, or inside its `outcome`
+    (the optimized build's service graph since its doorless refactor)."""
+    output = output or {}
+    return output.get("action") or (output.get("outcome") or {}).get("action")
 
 
 def pct(values: list[float], q: float) -> float:
@@ -63,11 +74,11 @@ def measure(build: str, run_dir: Path) -> dict:
         nodes = trace_nodes(project, run["run_id"], item["trace_id"])
         llm = [n for n in nodes if n["op_type"] == "llm" and n["status"] == "ok"]
         usage = [(n.get("outputs") or {}).get("usage") or {} for n in llm]
-        tin = sum(u.get("prompt_tokens", 0) for u in usage)
-        tout = sum(u.get("completion_tokens", 0) for u in usage)
+        tin = sum(u.get("prompt_tokens", u.get("input_tokens", 0)) or 0 for u in usage)
+        tout = sum(u.get("completion_tokens", u.get("output_tokens", 0)) or 0 for u in usage)
         per.append({"id": item["key"], "ms": item["ms"], "llm": len(llm), "tools": tool_calls(build, nodes),
                     "tokens_in": tin, "tokens_out": tout, "passed": item["verdict"]["passed"],
-                    "action": (item["verdict"].get("output") or {}).get("action")})
+                    "action": _action(item["verdict"].get("output"))})
     briefs = [p for p in per if p["action"] == "brief"]
     mean = statistics.mean
     return {

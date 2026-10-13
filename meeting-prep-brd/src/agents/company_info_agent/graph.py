@@ -1,37 +1,22 @@
-"""Company Info Agent: an LLM with the CRM and knowledge-base tools, in a
-loop — model → tool calls through the harness → model — until it answers."""
-import operator
+"""Company Info Agent: an LLM with the CRM and knowledge-base tools (AgentOp:
+model → tool calls through the harness → model, until it answers), and its
+answer checked."""
+from operonx import END, START, graph
+from operonx.agents import AgentOp
 
-from operonx import END, PARENT, START, graph
-from operonx.core.ops import if_
-from operonx.providers.ops import LLMOp
-from operonx.reducers import add_messages
-
-from .._shared.graph import run_tools
-from .._shared.ops import count_turn, reply, tool_results, tool_schemas
+from .._shared.ops import answered
+from .._shared.tools import agent
 from .ops import company_info, opening
+
+COMPANY_INFO_AGENT = agent("company_info_agent", turns=6)
 
 
 @graph
 def company_info_agent(company):
     """Company → {profile, contacts, history, kb_notes}."""
-    PARENT.declare(messages=[], alerts=[], tools=[], turns=0,
-                   reducers={"messages": add_messages, "alerts": operator.add})
     task = opening(company=company)
-    schemas = tool_schemas(agent="company_info_agent")
-    task["messages"] >> PARENT["messages"]
-    schemas["tools"] >> PARENT["tools"]
-    turn = count_turn(turns=PARENT["turns"], max_turns=6)
-    turn["turns"] >> PARENT["turns"]
-    model = LLMOp.of(resource="agent", messages=PARENT["messages"], tools=PARENT["tools"],
-                     tool_choice=turn["tool_choice"])
-    said = reply(content=model["content"], tool_calls=model["tool_calls"], finish_reason=model["finish_reason"])
-    said["messages"] >> PARENT["messages"]
-    tools = run_tools(agent="company_info_agent", tool_calls=said["tool_calls"])
-    results = tool_results(messages=tools["message"].collect(), alerts=tools["alert"].collect())
-    results["messages"] >> PARENT["messages"]
-    results["alerts"] >> PARENT["alerts"]
-    found = company_info(content=said["content"], alerts=PARENT["alerts"])
-    START >> [task, schemas] >> turn >> model >> said >> if_(said["done"] == True, found).else_(tools)  # noqa: E712
-    tools >> results >> turn
-    found >> END
+    info = AgentOp.of(agent=COMPANY_INFO_AGENT, input=task["input"])
+    run = answered(output=info["output"], status=info["status"], error=info["error"],
+                   state_id=info["state_id"], messages=info["messages"])
+    found = company_info(content=run["content"], alerts=run["alerts"])
+    START >> task >> info >> run >> found >> END

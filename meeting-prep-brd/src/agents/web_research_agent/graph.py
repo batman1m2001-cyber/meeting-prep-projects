@@ -1,37 +1,22 @@
-"""Web Research Agent: an LLM with the web tools (search, fetch, news), in a
-loop — model → tool calls through the harness → model — until it answers."""
-import operator
+"""Web Research Agent: an LLM with the web tools — search, fetch, news —
+(AgentOp: model → tool calls through the harness → model, until it answers),
+and its answer checked."""
+from operonx import END, START, graph
+from operonx.agents import AgentOp
 
-from operonx import END, PARENT, START, graph
-from operonx.core.ops import if_
-from operonx.providers.ops import LLMOp
-from operonx.reducers import add_messages
-
-from .._shared.graph import run_tools
-from .._shared.ops import count_turn, reply, tool_results, tool_schemas
+from .._shared.ops import answered
+from .._shared.tools import agent
 from .ops import opening, research
+
+WEB_RESEARCH_AGENT = agent("web_research_agent", turns=8)
 
 
 @graph
 def web_research_agent(company):
     """Company → {website, field, products, size, headquarters, news, people, sources}."""
-    PARENT.declare(messages=[], alerts=[], tools=[], turns=0,
-                   reducers={"messages": add_messages, "alerts": operator.add})
     task = opening(company=company)
-    schemas = tool_schemas(agent="web_research_agent")
-    task["messages"] >> PARENT["messages"]
-    schemas["tools"] >> PARENT["tools"]
-    turn = count_turn(turns=PARENT["turns"], max_turns=8)
-    turn["turns"] >> PARENT["turns"]
-    model = LLMOp.of(resource="agent", messages=PARENT["messages"], tools=PARENT["tools"],
-                     tool_choice=turn["tool_choice"])
-    said = reply(content=model["content"], tool_calls=model["tool_calls"], finish_reason=model["finish_reason"])
-    said["messages"] >> PARENT["messages"]
-    tools = run_tools(agent="web_research_agent", tool_calls=said["tool_calls"])
-    results = tool_results(messages=tools["message"].collect(), alerts=tools["alert"].collect())
-    results["messages"] >> PARENT["messages"]
-    results["alerts"] >> PARENT["alerts"]
-    found = research(content=said["content"], alerts=PARENT["alerts"])
-    START >> [task, schemas] >> turn >> model >> said >> if_(said["done"] == True, found).else_(tools)  # noqa: E712
-    tools >> results >> turn
-    found >> END
+    web = AgentOp.of(agent=WEB_RESEARCH_AGENT, input=task["input"])
+    run = answered(output=web["output"], status=web["status"], error=web["error"],
+                   state_id=web["state_id"], messages=web["messages"])
+    found = research(content=run["content"], alerts=run["alerts"])
+    START >> task >> web >> run >> found >> END

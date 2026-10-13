@@ -7,7 +7,6 @@ from typing import Optional
 from operonx import op
 
 from .._shared import _messages
-from .._shared._prompts import PROMPTS
 
 FACTS = ("sender", "sender_email", "company_hint", "domain", "content_summary", "intent",
          "is_customer_or_partner", "is_new_customer", "attachments")
@@ -17,8 +16,7 @@ FACTS = ("sender", "sender_email", "company_hint", "domain", "content_summary", 
 def opening(email_id: str) -> dict:
     """Task "analyse": a new email arrived."""
     task = {"task": "analyse", "email_id": email_id}
-    return {"messages": [{"role": "system", "content": PROMPTS["email_agent"]},
-                         {"role": "user", "content": json.dumps(task)}]}
+    return {"input": json.dumps(task)}
 
 
 @op
@@ -48,8 +46,7 @@ def email_facts(email_id: str, content: Optional[str] = None, messages: Optional
 def send_opening(approval_id: int, to: str, subject: str, body: str) -> dict:
     """Task "send": an approved email to send."""
     task = {"task": "send", "approval_id": approval_id, "to": to, "subject": subject, "body": body}
-    return {"messages": [{"role": "system", "content": PROMPTS["email_agent"]},
-                         {"role": "user", "content": json.dumps(task, ensure_ascii=False)}]}
+    return {"input": json.dumps(task, ensure_ascii=False)}
 
 
 @op
