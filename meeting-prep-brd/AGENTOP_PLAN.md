@@ -1,6 +1,6 @@
 # The brd build's agents on AgentOp
 
-**Status (2026-10-13):** A0, A1, A2 and A4 are done; A3 is done except the real-model golden run, which is blocked (see below). Branch `feat/brd-agentop`.
+**Status:** done 2026-10-13 (A0–A4). Branch `feat/brd-agentop`, PR #12.
 
 ## Why
 
@@ -65,18 +65,17 @@ When this build was made there was no agent op in OperonX. Its conventions forbi
 
 - **A0:** operonx-agents 0.2.1 is on PyPI with AgentOp's `messages` output (Operonx #152).
 - **A1, A2:** all seven agent graphs are on AgentOp; the loop ops are gone.
-- **A3, the tests:**
-  - Conventions, tools and harness pass, along with the new `tests/unit/test_agents.py` (scripted model, live MCP servers). 509 passed, plus the earlier 528 from the unit run.
-  - The 3 tests that fail are the kb and memory tools' embedding calls, refused by OpenAI (`insufficient_quota`).
-  - The new tests show:
+- **A3, the tests:** 535 pass live, with the kb and memory embedding calls going through OpenRouter.
+  - The new `tests/unit/test_agents.py` (scripted model, live MCP servers) shows:
     - the tools the agents are shown equal the running servers' list;
     - a call runs and audits the harness;
     - an attack the agent read makes the email `block`, while the attack's words never reach the model;
     - a run that did not answer is an error.
-- **A3, the golden run is blocked:**
-  - The model router's OpenAI key has no credit left. gpt-4o-mini and the embeddings answer `429 insufficient_quota`.
-  - The in-house model (`inhouse:`) answers, but its vLLM server has tool calling off (`"auto" tool choice requires --enable-auto-tool-choice`), so no agent can run on it.
-  - Once there is credit: `operonx run golden` here and in meeting-prep-operonx, then `python compare_builds.py`. The score must be at least 16/19.
+- **A3, the golden run (2026-10-13, gpt-4o-mini):**
+  - The model router's OpenAI key had no credit left, so the run used OpenRouter, with the same models.
+  - brd scores **16/19**, the same as before, with the same failed cases: mekong-attachment, saigonfresh-followup and lotus-it.
+  - The optimized build scores **18/19**, the same as before.
+  - `COMPARISON_BRD.md` is re-measured. `compare_builds.py` now reads AgentOp's usage (`input_tokens`/`output_tokens`), its tool dispatches, and the optimized build's `outcome`.
 - **A4:** in the studio, the six agents draw as agent cards (email, web, calendar, info, memory, writer). A scripted Calendar Agent run reads `calendar → turn → model, calendar__meetings → tool_call → checked … data`.
 
 The world (mail, db, the web mocks, the model router) is started piece by piece from `ai-workflow-seminar/stack.sh`'s commands for the retest, and stopped after it.
