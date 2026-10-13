@@ -7,14 +7,12 @@ from typing import Optional
 from operonx import op
 
 from .._shared import _messages
-from .._shared._prompts import PROMPTS
 
 
 @op
 def opening(company: dict) -> dict:
     task = {"task": "get what we hold about this company", "company": company}
-    return {"messages": [{"role": "system", "content": PROMPTS["company_info_agent"]},
-                         {"role": "user", "content": json.dumps(task, ensure_ascii=False)}]}
+    return {"input": json.dumps(task, ensure_ascii=False)}
 
 
 @op

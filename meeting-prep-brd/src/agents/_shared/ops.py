@@ -1,5 +1,5 @@
-"""The steps every agent shares: the loop's (model turn, reply check, tool
-results) and the tool harness's six, one op per step.
+"""The steps every agent shares: its run checked (`answered`), and the tool
+harness's six, one op per step.
 
 Tool harness, per call (`graph.tool_call`):
     validate      the arguments against the tool's schema
@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import uuid
 from typing import Any, Optional
 
 import jsonschema
@@ -27,64 +26,31 @@ from prep_world.guard import looks_like_attack, visible_text
 
 from stores import brd
 
-from . import _mcp, _scopes
-
-TRUNCATED = ("length", "max_tokens", "content_filter")
+from . import _mcp, _scopes, _screens
 
 
-# ── the loop ───────────────────────────────────────────────────────────────
+# ── an agent's run, and the steps that are not agents ──────────────────────
 @op
-async def tool_schemas(agent: str) -> dict:
-    """The tools this agent may call, as the model is shown them — and no others."""
-    catalog = await _mcp.catalog()
-    missing = [t for t in _scopes.tools_of(agent) if t not in catalog]
-    if missing:
-        raise ValueError(f"{agent}: no MCP server provides {missing}")
-    return {"tools": [{"type": "function",
-                       "function": {"name": t, "description": catalog[t]["description"],
-                                    "parameters": catalog[t]["schema"]}}
-                      for t in _scopes.tools_of(agent)]}
-
-
-@op
-def count_turn(turns: int = 0, max_turns: int = 8) -> dict:
-    """One more turn. On the last one the model may not call a tool: it must answer."""
-    turns = (turns or 0) + 1
-    return {"turns": turns, "tool_choice": "none" if turns >= max_turns else "auto"}
-
-
-@op
-def reply(content: Optional[str] = None, tool_calls: Optional[list] = None,
-          finish_reason: Optional[str] = None) -> dict:
-    """The model's turn, checked: a cut or empty reply is an error, never an answer."""
-    if finish_reason in TRUNCATED:
-        raise ValueError(f"the model's reply was cut off ({finish_reason})")
-    calls = [c for c in tool_calls or [] if isinstance(c, dict)]
-    if not calls and not (content or "").strip():
-        raise ValueError("the model replied with neither text nor a tool call")
-    message: dict[str, Any] = {"id": f"assistant-{uuid.uuid4().hex[:12]}", "role": "assistant",
-                               "content": content or ""}
-    if calls:
-        message["tool_calls"] = calls
-    return {"messages": [message], "tool_calls": calls, "done": not calls, "content": content or ""}
+def answered(output: Any = None, status: Optional[str] = None, error: Optional[str] = None,
+             state_id: Optional[str] = None, messages: Optional[list] = None) -> dict:
+    """An agent's run (AgentOp), checked: it answered — a cut or empty reply,
+    a run out of turns or a failure is an error, never an answer. Its answer,
+    its conversation, and what the injection screen found during it."""
+    alerts = _screens.take(state_id)
+    if status != "completed":
+        raise ValueError(f"the agent did not answer ({status}): {error or 'no answer'}")
+    content = output if isinstance(output, str) else ""
+    if not content.strip():
+        raise ValueError("the agent's answer is empty")
+    return {"content": content, "messages": [m for m in messages or [] if isinstance(m, dict)],
+            "alerts": alerts}
 
 
 @op
 def each_call(tool_calls: Optional[list] = None):
-    """One frame per tool call the model asked for."""
+    """One frame per tool call a step makes (`graph.run_tools`)."""
     for call in tool_calls or []:
         yield {"call": call}
-
-
-@op
-def tool_results(messages: Any = None, alerts: Any = None) -> dict:
-    """A turn's tool messages and screen alerts, as lists for the loop's cells
-    (`.collect()` of a single call hands over the frame itself, not a list)."""
-    return {"messages": _dicts(messages), "alerts": _dicts(alerts)}
-
-
-def _dicts(value: Any) -> list:
-    return [value] if isinstance(value, dict) else [v for v in value or [] if isinstance(v, dict)]
 
 
 @op
