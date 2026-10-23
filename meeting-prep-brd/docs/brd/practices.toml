@@ -1,0 +1,7 @@
+[tdd]
+mode = "acceptance"
+
+[done]
+checks = [
+  { name = "tests", cmd = "uv run pytest -q" },
+]
