@@ -1,0 +1,8 @@
+[tdd]
+mode = "acceptance"
+
+[done]
+checks = [
+  # test_send_or_save and test_inbox call a live LLM (no network/key in CI), so they are left out.
+  { name = "tests", cmd = "uv run pytest -q --deselect tests/test_zones.py::test_send_or_save --deselect tests/test_zones.py::test_inbox" },
+]
