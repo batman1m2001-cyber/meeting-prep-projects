@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import os
 import urllib.parse
 from email.utils import parseaddr
 
@@ -12,10 +11,9 @@ from operonx import op
 from prep_world import WEB, db, mail, world
 from prep_world.guard import leaks, looks_like_attack, visible_text
 
+from _shared.config import APPROVE_URL
 from prepare import _mcp, _run_memo, _web, memory
 
-# where the approval email links: the app itself, or a public address that forwards to it
-APPROVE_URL = os.environ.get("PREP_APPROVE_URL", "http://127.0.0.1:8200/approve")
 
 def _domain(address: str) -> str:
     return parseaddr(address)[1].rpartition("@")[2].lower()
