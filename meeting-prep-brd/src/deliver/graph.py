@@ -11,8 +11,7 @@ every other input comes from upstream of it.
 from operonx import END, START, graph
 from operonx.core.ops import if_
 
-from agents._shared.graph import run_tools
-from agents.email_agent.graph import email_agent_send
+from agents import email_agent_send, run_tools
 
 from .ops import approved_brief, decide, delivered, not_delivered, save_calls
 

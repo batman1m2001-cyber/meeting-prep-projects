@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from operonx import op
 
-from tools._golden import email_id
+from tools import email_id
 
 
 @op

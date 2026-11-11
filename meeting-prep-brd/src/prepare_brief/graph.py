@@ -11,12 +11,14 @@ sales the approve/reject links; the eval runs with it off, so it sends nothing.
 from operonx import END, START, graph
 from operonx.core.ops import if_
 
-from agents.calendar_agent.graph import calendar_agent
-from agents.company_info_agent.graph import company_info_agent
-from agents.email_agent.graph import email_agent
-from agents.memory_agent.graph import memory_agent
-from agents.report_agent.graph import report_agent
-from agents.web_research_agent.graph import web_research_agent
+from agents import (
+    calendar_agent,
+    company_info_agent,
+    email_agent,
+    memory_agent,
+    report_agent,
+    web_research_agent,
+)
 from extract_company.graph import extract_company
 from human_approval.graph import human_approval
 

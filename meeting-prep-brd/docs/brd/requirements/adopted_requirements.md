@@ -25,13 +25,13 @@ Extracted from the project's own docs, code and tests (`operonx-project adopt`, 
 | MPB-REQ-REPORT-01 | README.md, The diagram, box for box | the brief's six sections (intro, field, products, recent news, contacts, points to note) as Markdown and as an email | The report is rendered with its six sections as Markdown and as a plain-text email body. | documented |
 | MPB-REQ-WEB-01 | README.md, The diagram, box for box | Web Research Agent: website, field, products, size, news, people, sources | Web tools search, fetch only allowed pages, and return news newest-first with a freshness flag. | documented |
 | MPB-REQ-MAIL-01 | README.md, The diagram, box for box | Email Agent ... mail__list_new mail__read mail__send mail__status | Mail reads a golden email without a mail server, sends to sales, and tracks delivery. | documented |
-| MPB-REQ-AGENT-05 | AGENTOP_PLAN.md, What changes 2 | harness_tools(identity) builds one tool per scoped tool (scopes.yaml) ... A live test checks they equal what the running servers list. | The tools an agent is shown equal the tools the running MCP servers list. | documented |
+| MPB-REQ-AGENT-05 | docs/AGENTOP_PLAN.md, What changes 2 | harness_tools(identity) builds one tool per scoped tool (scopes.yaml) ... A live test checks they equal what the running servers list. | The tools an agent is shown equal the tools the running MCP servers list. | documented |
 
 ## Non-functional requirements
 
 | ID | Location | Quote (source language) | Reading | Doc status |
 |---|---|---|---|---|
-| MPB-REQ-AGENT-04 | AGENTOP_PLAN.md, What stays | Parallel calls: a turn's tool calls still run in parallel. | The tool calls of one turn run in parallel. | documented |
+| MPB-REQ-AGENT-04 | docs/AGENTOP_PLAN.md, What stays | Parallel calls: a turn's tool calls still run in parallel. | The tool calls of one turn run in parallel. | documented |
 | MPB-REQ-CONV-01 | tests/repo/test_graph_conventions.py, docstring table | @graph / @op only at module level \| a nested one is a factory | Graphs and ops are defined at module level only, never inside a function. | documented |
 | MPB-REQ-CONV-02 | tests/repo/test_graph_conventions.py, docstring table | @graph only in graph.py, @op only in ops.py | Each package puts its graphs in graph.py and its ops in ops.py. | documented |
 | MPB-REQ-CONV-03 | tests/repo/test_graph_conventions.py, docstring table | Operon(...) only at an entry point | Library code never builds an engine; only an entry point does. | documented |
@@ -43,7 +43,7 @@ Extracted from the project's own docs, code and tests (`operonx-project adopt`, 
 | ID | Location | Quote (source language) | Reading | Doc status |
 |---|---|---|---|---|
 | MPB-REQ-AGENT-02 | README.md, The diagram, box for box | each agent ... a loop until it answers with its structured output, which its own op checks; a bad answer is an error, never a default. | An agent's final answer is checked, and a bad or missing answer raises an error. | documented |
-| MPB-REQ-AGENT-03 | AGENTOP_PLAN.md, What stays | Turn limits: the same per agent. On the last turn the model must answer. | Each agent has a turn limit, and on the last turn it must answer. | documented |
+| MPB-REQ-AGENT-03 | docs/AGENTOP_PLAN.md, What stays | Turn limits: the same per agent. On the last turn the model must answer. | Each agent has a turn limit, and on the last turn it must answer. | documented |
 | MPB-REQ-HARN-01 | README.md, harness step table | 1 validate \| validate \| a known tool; arguments a JSON object matching its schema | The harness refuses an unknown tool or bad arguments and returns the refusal as a value. | documented |
 | MPB-REQ-HARN-02 | README.md, harness step table | 2 auth \| authenticate \| the caller is a known identity | A call from an unknown identity is refused and audited. | documented |
 | MPB-REQ-HARN-03 | README.md, harness step table; src/agents/_shared/scopes.yaml, header (Least privilege) | 3 scopes \| authorize \| its own tools only | An agent can call only the tools listed for it in scopes.yaml. | documented |

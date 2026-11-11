@@ -3,9 +3,7 @@ extraction, then a CRM lookup (through the tool harness), no loop."""
 from operonx import END, START, graph
 from operonx.providers.ops import LLMOp
 
-from agents._shared._prompts import PROMPTS
-from agents._shared.graph import tool_call
-from agents._shared.ops import parsed
+from agents import PROMPTS, parsed, tool_call
 
 from .ops import company, email_facts, lookup_call
 

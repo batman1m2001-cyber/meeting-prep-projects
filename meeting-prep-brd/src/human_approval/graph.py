@@ -9,7 +9,7 @@ not an agent. No model runs here.
 from operonx import END, START, graph
 from operonx.core.ops import if_
 
-from agents._shared.graph import tool_call
+from agents import tool_call
 
 from .ops import approval_call, held, review_call, waiting
 

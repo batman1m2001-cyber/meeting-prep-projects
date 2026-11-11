@@ -88,7 +88,7 @@ person approves.
 ```bash
 cp .env.example .env   # PREP_DB_URL (5434), OPENAI_BASE_URL (the seminar router), OPENAI_API_KEY
 set -a; . ./.env; set +a
-PYTHONPATH=src uv run python -m stores.seed   # schema brd (idempotent; --reset drops brd only)
+uv run python scripts/seed.py               # schema brd (idempotent; --reset drops brd only)
 uv run pytest -q                        # conventions, tools, harness, e2e (live services; skipped when down)
 uv run operonx-run golden               # the 19 golden emails, real model, no mail; fails under 90%
 uv run operonx-serve                    # :8400

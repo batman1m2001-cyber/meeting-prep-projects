@@ -13,3 +13,7 @@ Each is started as `python -m tools.<name>`. The agents never call these
 functions directly: every call goes through the tool harness
 (`agents/_shared`), which starts the servers and speaks MCP to them.
 """
+
+from tools._golden import email_id
+
+__all__ = ["email_id"]
