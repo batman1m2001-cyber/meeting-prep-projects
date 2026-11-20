@@ -2,7 +2,7 @@ from operonx import op
 from prep_world import db, mail, world
 
 
-@op(writes="drafts")
+@op(reads="drafts", writes="drafts")
 def decide(draft: str, decision: str) -> dict:
     """A draft is decided once: a second click changes nothing (`decided` is then None)."""
     return {"decided": db.decide_draft(int(draft), decision == "approve")}
