@@ -15,7 +15,7 @@ MEMORY_AGENT = agent("memory_agent", turns=8)
 def memory_agent(company, facts, research, meetings, info):
     """The findings + past memory → {context, new_since_last, profile}; writes the research history."""
     task = opening(company=company, facts=facts, research=research, meetings=meetings, info=info)
-    memory = AgentOp.of(agent=MEMORY_AGENT, input=task["input"])
+    memory = AgentOp.of(agent=MEMORY_AGENT, input=task["input"], reads="memory")
     run = answered(output=memory["output"], status=memory["status"], error=memory["error"],
                    state_id=memory["state_id"], messages=memory["messages"])
     merged = context(content=run["content"], alerts=run["alerts"])

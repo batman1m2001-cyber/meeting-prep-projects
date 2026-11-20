@@ -15,7 +15,7 @@ COMPANY_INFO_AGENT = agent("company_info_agent", turns=6)
 def company_info_agent(company):
     """Company → {profile, contacts, history, kb_notes}."""
     task = opening(company=company)
-    info = AgentOp.of(agent=COMPANY_INFO_AGENT, input=task["input"])
+    info = AgentOp.of(agent=COMPANY_INFO_AGENT, input=task["input"], reads="kb")
     run = answered(output=info["output"], status=info["status"], error=info["error"],
                    state_id=info["state_id"], messages=info["messages"])
     found = company_info(content=run["content"], alerts=run["alerts"])
