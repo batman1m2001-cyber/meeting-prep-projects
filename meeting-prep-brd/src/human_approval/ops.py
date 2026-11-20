@@ -15,7 +15,7 @@ def _call(call_id: str, name: str, args: dict) -> dict:
             "function": {"name": name, "arguments": json.dumps(args, ensure_ascii=False)}}
 
 
-@op
+@op(reads="reports", writes="approvals")
 def approval_call(report: dict) -> dict:
     """The approval request, as a tool call for the harness (which refuses a brief that leaks)."""
     return {"call": _call(f"approval-{report['report_id']}", "approval__request",

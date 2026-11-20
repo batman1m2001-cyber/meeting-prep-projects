@@ -11,7 +11,7 @@ from prep_world import world
 from stores import brd
 
 
-@op(writes="approvals")
+@op(reads="approvals", writes="approvals")
 def decide(approval_id: int, decision: str) -> dict:
     """Record the person's click. A request is decided once: a second click changes nothing."""
     if decision not in ("approve", "reject"):

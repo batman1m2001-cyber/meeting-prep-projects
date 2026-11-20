@@ -15,7 +15,7 @@ REPORT_AGENT = agent("report_agent", turns=5)
 def report_agent(company, facts, context, profile):
     """The merged context → the brief {report_id, markdown, subject, email_body}."""
     task = opening(company=company, facts=facts, context=context, profile=profile)
-    writer = AgentOp.of(agent=REPORT_AGENT, input=task["input"])
+    writer = AgentOp.of(agent=REPORT_AGENT, input=task["input"], writes="reports")
     run = answered(output=writer["output"], status=writer["status"], error=writer["error"],
                    state_id=writer["state_id"], messages=writer["messages"])
     brief = report(company=company, content=run["content"], messages=run["messages"], alerts=run["alerts"])
