@@ -1,7 +1,26 @@
 [project]
 name = "meeting-prep-brd"
+description = "Meeting Prep from its BRD — six agents with MCP tools turn a lead's email into a brief; a person approves it before it is sent and saved."
 src  = ["src", "."]
 app  = "app.main:APP"
 
 [resources]
 overlay = "resources.yaml"
+
+# The stores: named places where one flow leaves data and another picks it up.
+# An op names the ones it touches (`@op(reads=…, writes=…)`); the studio's
+# project picture draws flow → store → flow from that.
+[stores.approvals]
+description = "One request per brief waiting for a person; decided once, by the approval link."
+
+[stores.reports]
+description = "The briefs the Report Agent's tools stored: markdown and the email body."
+
+[stores.kb]
+description = "The knowledge base: approved briefs, chunked, searched by the Company Info Agent."
+
+[stores.memory]
+description = "Per-company memory: results and research runs the Memory Agent recalls."
+
+[stores.audit]
+description = "Every tool call an agent made, allowed or refused."

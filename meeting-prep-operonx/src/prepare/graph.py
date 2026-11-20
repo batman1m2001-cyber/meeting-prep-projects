@@ -154,6 +154,7 @@ def human_approval_gate(email, deliver, company=None, brief=None, ok=None, probl
 # ── prepare: the brief's diagram, top to bottom ───────────────────────────
 @graph
 def prepare(mail, deliver):
+    """A lead's email becomes a researched sales brief: triage it, find the company, research it (web, calendar, CRM, memory), merge the evidence, write the brief and ask sales to approve it."""
     email = email_agent(email=mail)
     extract_company = extract_company_name(email=mail)
     web_research = web_research_agent(company=extract_company["company"])

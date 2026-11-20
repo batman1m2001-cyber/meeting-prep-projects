@@ -10,6 +10,7 @@ from .ops import case
 
 @graph
 def golden_case():
+    """One golden email through prepare_brief, by its golden mail id: no mail server, nothing sent — the run ends at approval."""
     src = ingress()
     email = case(item=src["item"])
     prepare = prepare_brief(email_id=email["email_id"], notify=email["notify"])

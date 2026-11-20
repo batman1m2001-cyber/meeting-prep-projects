@@ -1,7 +1,17 @@
 [project]
 name = "meeting-prep"
+description = "Meeting Prep on OperonX — a lead's email becomes a researched sales brief, sent to sales once a person approves it."
 src  = ["src", "."]
 app  = "app.main:APP"
 
 [resources]
 overlay = "resources.yaml"
+
+# The stores: named places where one flow leaves data and another picks it up.
+# An op names the ones it touches (`@op(reads=…, writes=…)`); the studio's
+# project picture draws flow → store → flow from that.
+[stores.drafts]
+description = "A brief waiting for a person: prepare saves it, the approval link decides it once."
+
+[stores.memory]
+description = "What approved briefs said about each company — recalled by the next run for the same company."
