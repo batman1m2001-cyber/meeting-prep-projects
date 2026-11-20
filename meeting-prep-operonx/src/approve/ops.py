@@ -2,7 +2,7 @@ from operonx import op
 from prep_world import db, mail, world
 
 
-@op
+@op(writes="drafts")
 def decide(draft: str, decision: str) -> dict:
     """A draft is decided once: a second click changes nothing (`decided` is then None)."""
     return {"decided": db.decide_draft(int(draft), decision == "approve")}
@@ -19,7 +19,7 @@ def send(draft: dict = None) -> dict:
     return {"sent": [sales]}
 
 
-@op
+@op(writes="memory")
 def save(draft: dict = None) -> dict:
     """Approved → the brief goes into the knowledge base: memory for the next run."""
     if not draft or draft["status"] != "approved":
@@ -30,6 +30,7 @@ def save(draft: dict = None) -> dict:
 
 @op
 def reply(asked: str, draft: dict = None) -> dict:
+    """What the person who clicked sees: the draft, its status and the company — or that it was already decided."""
     if draft is None:
         return {"reply": {"draft": int(asked), "status": "already decided, or no such draft"}}
     return {"reply": {"draft": draft["id"], "status": draft["status"], "company": draft["company_id"]}}

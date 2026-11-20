@@ -100,7 +100,7 @@ def rate_limit(identity: str, tool: str, error: Optional[str] = None) -> dict:
     return {"error": error or _scopes.over_limit(identity, tool)}
 
 
-@op(bound="cpu")
+@op(bound="cpu", writes="audit")
 def audit(identity: str, tool: str, args: dict, error: Optional[str] = None) -> dict:
     """Step 5: every call into the audit log, allowed or refused."""
     return {"audit_id": brd.log_call(identity, tool or "?", args, error or "allowed")}

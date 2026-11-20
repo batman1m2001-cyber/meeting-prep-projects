@@ -11,7 +11,7 @@ from prep_world import world
 from stores import brd
 
 
-@op
+@op(writes="approvals")
 def decide(approval_id: int, decision: str) -> dict:
     """Record the person's click. A request is decided once: a second click changes nothing."""
     if decision not in ("approve", "reject"):
@@ -23,7 +23,7 @@ def decide(approval_id: int, decision: str) -> dict:
             "report_id": row["payload"]["report_id"]}
 
 
-@op
+@op(reads="reports")
 def approved_brief(report_id: int) -> dict:
     """The brief the person approved, as the Email Agent will send it."""
     r = brd.report(report_id)
@@ -37,7 +37,7 @@ def _call(call_id: str, name: str, args: dict) -> dict:
             "function": {"name": name, "arguments": json.dumps(args, ensure_ascii=False)}}
 
 
-@op
+@op(writes=["kb", "memory"])
 def save_calls(report: dict, approval_id: int) -> dict:
     """Into the knowledge base, and into the company's memory: two tool calls for the harness."""
     company = report["company_id"] or report["title"]
@@ -61,4 +61,5 @@ def delivered(approval_id: int, message_id: str, status: str, ok: Optional[list]
 
 @op
 def not_delivered(approval_id: int, status: str) -> dict:
+    """The run ends with nothing sent or saved: the brief was rejected, or already decided."""
     return {"outcome": {"approval_id": approval_id, "status": status, "sent": [], "saved": []}}

@@ -46,6 +46,7 @@ def letter(email: dict) -> dict:
 # ── who is it ──────────────────────────────────────────────────────────────
 @op
 async def identify(email: dict) -> dict:
+    """Which company wrote: the CRM's match for the sender's domain (none when the CRM does not know it)."""
     company = await _mcp.call("crm_find_company", domain_or_name=_domain(email["from"]))
     return {"company": company or None, "company_id": (company or {}).get("id"),
             "name": (company or {}).get("name") or _domain(email["from"])}
@@ -53,6 +54,7 @@ async def identify(email: dict) -> dict:
 
 @op
 async def crm(company_id: str = None) -> dict:
+    """The company's contacts and our history with it, from the CRM."""
     if not company_id:
         return {"contacts": [], "history": []}
     return {"contacts": await _mcp.call("crm_contacts", company_id=company_id),
@@ -61,11 +63,13 @@ async def crm(company_id: str = None) -> dict:
 
 @op
 async def calendar(company_id: str = None) -> dict:
+    """Meetings already booked with the company."""
     return {"meetings": await _mcp.call("calendar_meetings", company_id=company_id) if company_id else []}
 
 
-@op(bound="cpu")
+@op(bound="cpu", reads="memory")
 def recall(company: dict = None) -> dict:
+    """What earlier briefs said about this company: the three closest memory notes."""
     if not company:
         return {"memory": []}
     return {"memory": [r["content"] for r in db.recall(f"{company['name']} {company['industry']}",
@@ -110,6 +114,7 @@ def page_text(html: str) -> dict:
 # ── the research team: three agents, one question each ─────────────────────
 @op
 def research_tasks(company: dict = None) -> dict:
+    """The three questions the research agents get: what the company does, its news, its people."""
     name = (company or {}).get("name", "the company")
 
     def ask(focus: str) -> str:
@@ -139,6 +144,7 @@ def _answer(output: str = None) -> str:
 def evidence(email: dict, company: dict = None, contacts: list = None, history: list = None,
              meetings: list = None, memory: list = None, website: str = None, news: str = None,
              people: str = None) -> dict:
+    """Every source as one list of evidence lines: profile, the email, contacts, history, meetings, memory, research."""
     c = company or {}
     lines = [f"Profile: {c.get('name')} — {c.get('industry')}, {c.get('hq')}, {c.get('size')}. {c.get('about', '')}",
              f"Email from {email.get('from_name') or email['from']}: {email.get('subject', '')} — "
@@ -161,6 +167,7 @@ def dedupe(lines: list = None) -> dict:
 
 @op
 def check_brief(brief: str = None, company: dict = None) -> dict:
+    """The brief must not leak addresses outside ours and the company's, and must be for a company the CRM knows; otherwise it is held for a person."""
     us = world()["us"]["domain"]
     problems = leaks(brief or "", (us, (company or {}).get("domain", us)))
     if not company:
@@ -170,7 +177,7 @@ def check_brief(brief: str = None, company: dict = None) -> dict:
     return {"ok": not problems, "problems": problems}
 
 
-@op
+@op(writes="drafts")
 def request_approval(email: dict, company: dict, brief: str, deliver: bool = True) -> dict:
     """Save the draft, then ask sales by email. The run ends here; the link continues it.
     `deliver=False` (the eval) does neither: a test run sends nobody anything."""
@@ -188,11 +195,13 @@ def request_approval(email: dict, company: dict, brief: str, deliver: bool = Tru
 # ── the other ways a run ends ──────────────────────────────────────────────
 @op
 def blocked(reason: str = None) -> dict:
+    """The run ends: the email was screened out as an attack."""
     return {"outcome": {"action": "block", "company": None, "brief": None, "sent": [], "reason": reason}}
 
 
 @op
 def not_a_lead(intent: str = None) -> dict:
+    """The run ends: the email is not a lead."""
     return {"outcome": {"action": "skip", "company": None, "brief": None, "sent": [], "reason": intent}}
 
 

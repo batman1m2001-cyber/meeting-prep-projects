@@ -24,10 +24,12 @@ def unread() -> dict:
 
 @op
 def each(ids: list = None):
+    """One frame per unread email id, so each goes through prepare on its own."""
     for i in ids or []:
         yield {"item": {"ID": i}}
 
 
 @op
 def ignore() -> dict:
+    """Our own mail (the approval requests) ends here: nothing to prepare."""
     return {"outcome": {"action": "ignore"}}

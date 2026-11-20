@@ -13,10 +13,12 @@ RESEARCH = ("website", "field", "products", "size", "headquarters", "news", "peo
 
 @op
 def opening(company: dict) -> dict:
+    """The task, as the agent's first message: research this company."""
     task = {"task": "research this company", "company": company}
     return {"input": json.dumps(task, ensure_ascii=False)}
 
 
 @op
 def research(content: Optional[str] = None, alerts: Optional[list] = None) -> dict:
+    """The agent's answer: what the web says about the company, with its sources."""
     return {"research": _messages.answer(content, RESEARCH), "screened": alerts or []}

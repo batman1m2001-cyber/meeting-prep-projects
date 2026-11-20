@@ -21,5 +21,6 @@ def send_brief_or_save(draft, decision):
 
 @graph
 def approve(draft, decision):
+    """Sales clicked the approval link: record the decision, and when it is approve, send the brief to sales and keep it as memory for the next run."""
     send_or_save = send_brief_or_save(draft=draft, decision=decision)
     START >> send_or_save >> END

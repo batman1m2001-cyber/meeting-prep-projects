@@ -18,6 +18,7 @@ def opening(company: dict) -> dict:
 
 @op
 def meetings(content: Optional[str] = None, alerts: Optional[list] = None) -> dict:
+    """The agent's answer as the list of upcoming meetings; anything else is an error."""
     found = _messages.answer(content, ("meetings",))["meetings"]
     if not isinstance(found, list):
         raise ValueError(f"the Calendar Agent's meetings are not a list: {found!r}")

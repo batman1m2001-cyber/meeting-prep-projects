@@ -12,6 +12,7 @@ from .._shared import _messages
 
 @op
 def opening(company: dict, facts: dict, context: list, profile: dict) -> dict:
+    """The company, the email's facts, the merged context and the reader's profile, as the Report Agent's first message."""
     task = {"company": company, "email": facts, "context": context, "user_profile": profile}
     return {"input": json.dumps(task, ensure_ascii=False)}
 
