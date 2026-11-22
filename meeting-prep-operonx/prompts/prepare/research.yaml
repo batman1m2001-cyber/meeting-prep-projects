@@ -1,0 +1,6 @@
+id: pr_6451bd2f
+description: The research agent's instructions; its company memory follows when it has some.
+parts:
+  - prepare/research/task
+  - when: notes
+    use: prepare/research/known

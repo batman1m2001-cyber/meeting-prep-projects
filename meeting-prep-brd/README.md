@@ -33,7 +33,7 @@ deliver(approval_id, decision)          — on the approve link
 | Human Approval — *"Review and approve the briefing"* | `review` | `src/human_approval/` | **a person**, not an agent: the brief is saved as a pending approval (`brd.approvals`) and sales is emailed it with Approve / Reject links; the run ends | `approval__request`, `mail__send` (to sales, pending approvals only) |
 | Send Brief / Save to KB | `deliver` (the `approve` service: `GET /approve?approval=&decision=`) | `src/deliver/` | the person's click → **Email Agent** sends the brief to sales (only with that approved approval), then saves it to KB and memory | `mail__send` `mail__status` · `kb__save` `memory__remember` |
 
-Six agents, one plain step, one person. Each agent = system prompt (a `.prompt` file) +
+Six agents, one plain step, one person. Each agent = system prompt (`prompts/agents/<agent>.md`) +
 its tools (its row in `src/agents/_shared/scopes.yaml`) + a loop until it answers with
 its structured output, which its own op checks; a bad answer is an error, never a default.
 
@@ -72,8 +72,9 @@ person approves.
 | path | holds |
 |---|---|
 | `app/main.py` | the Application: services `prepare` and `approve` on :8400, the `golden` eval (gate 0.9) |
+| `prompts/` | every prompt, an object with an id: `agents/<agent>.md` (an agent's instructions), `extract_company.yaml` (its system + user) |
 | `src/prepare_brief/`, `src/deliver/` | the two flows |
-| `src/agents/<agent>/` | one agent each: `graph.py`, `ops.py`, `prompts/` |
+| `src/agents/<agent>/` | one agent each: `graph.py`, `ops.py` |
 | `src/agents/_shared/` | the loop's steps and the tool harness (`ops.py`, `graph.py`), MCP pool, scopes |
 | `src/extract_company/`, `src/human_approval/` | the two boxes that are not agents |
 | `src/tools/` | the eight MCP servers (stdio): mail, crm, calendar, kb, memory, report, approval, web |

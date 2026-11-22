@@ -14,13 +14,17 @@ Drawn as the course brief draws it: one zone (a nested `@graph`) per box.
                                                                    in approve: send_or_save)
 Every zone hands plain values on; none collects a stream.
 """
+from pathlib import Path
+
 from operonx import END, PARENT, START, graph
 from operonx.agents import Agent, AgentOp, Model, ToolPolicy, UsageLimits, tool
 from operonx.core.ops import if_
+from operonx.prompts import prompt
 from operonx.providers.ops import LLMOp
 
 from prepare import memory, ops
-from prepare._prompts import BRIEF, TRIAGE
+
+PROJECT = Path(__file__).resolve().parents[2]  # prompts/ is beside src/
 
 # Unattended: the agents may read (both tools are read-only); anything else is refused, never asked.
 READ_ONLY = ToolPolicy(default="deny", readonly="allow", destructive="deny")
@@ -66,7 +70,7 @@ def email_agent(email):
     read = ops.letter(email=email)
     triage = LLMOp.of(
         resource="assistant",
-        prompt={"system": TRIAGE, "user": "{letter}"},
+        prompt=prompt("prepare/triage", root=PROJECT),
         fields=["is_lead: bool", "intent: str", "contact: str"],
         parser="json",
         on_failure="error",
@@ -132,7 +136,7 @@ def report_agent(company=None, company_name=None, evidence=None):
     """Report Agent: an LLM writes the brief from the evidence; code checks it for leaks."""
     brief = LLMOp.of(
         resource="assistant",
-        prompt={"system": BRIEF, "user": "Company: {company}\n\nEvidence:\n{evidence}"},
+        prompt=prompt("prepare/brief", root=PROJECT),
         company=company_name,
         evidence=evidence,
     )
