@@ -18,18 +18,19 @@ from __future__ import annotations
 
 import asyncio
 import re
+from pathlib import Path
 
+from operonx.prompts import prompt
 from prep_world import db
 
 from prepare import _run_memo
-from prepare._prompts import RESEARCH
 
 # `ops.research_tasks` words every task "Research <name> for a sales meeting: …".
 _TASK = re.compile(r"Research (.+?) for a sales meeting")
 K = 3
 
-HEADING = ("Known from past meetings and approved briefs with this company. Do not research these "
-           "again; verify or update them, and report what is new or changed:")
+# prepare/research: the task, then (when there are notes) what is already known.
+RESEARCH = prompt("prepare/research", root=Path(__file__).resolve().parents[2])
 
 
 async def known(task: str, k: int = K) -> list[str]:
@@ -55,7 +56,4 @@ def instructions(ctx) -> str:
     """The research agent's system prompt, then its task's company memory (its `deps`).
     The same every turn of a run — one company, one task — so it sits in the stable
     prefix: the model reads it as background, and the prefix stays cacheable."""
-    notes = ctx.deps or []
-    if not notes:
-        return RESEARCH
-    return RESEARCH + "\n\n" + HEADING + "\n" + "\n".join(f"- {n}" for n in notes)
+    return RESEARCH.render(notes="\n".join(f"- {n}" for n in ctx.deps or []))

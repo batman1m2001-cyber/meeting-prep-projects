@@ -22,16 +22,19 @@ from __future__ import annotations
 import importlib
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from operonx import invoke
 from operonx.agents import Agent, Model, RunContext, UsageLimits
 from operonx.agents.tools.tool import Tool, ToolSpec
+from operonx.prompts import prompt
 from pydantic import BaseModel
 
 from . import _mcp, _scopes, _screens
-from ._prompts import PROMPTS
 from .graph import tool_call
+
+PROJECT = Path(__file__).resolve().parents[3]  # prompts/ is beside src/
 
 
 @lru_cache(maxsize=1)
@@ -87,5 +90,5 @@ def harness_tools(identity: str) -> list[HarnessTool]:
 def agent(identity: str, turns: int) -> Agent:
     """One of the brief's agents: its prompt, the `agent` model, its harnessed
     tools, and its turns — on the last one it may not call a tool, it answers."""
-    return Agent(name=identity, model=Model("agent"), instructions=PROMPTS[identity],
+    return Agent(name=identity, model=Model("agent"), instructions=prompt(f"agents/{identity}", root=PROJECT),
                  tools=harness_tools(identity), limits=UsageLimits(turns=turns))
